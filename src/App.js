@@ -1,23 +1,18 @@
-import logo from './logo.svg';
+import { Table } from '@mui/material';
 import './App.css';
+import NormalButton from './common/Button/NormalButton';
+import React from 'react';
+import TableEdit from './common/Table/Table';
+import TextInput from './common/Text/TextInput';
 
-function App() {
+const App = () => {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Central de Emergemcia</h1>
+      <TextInput text={"Emergencia"}></TextInput>
+      <NormalButton variant={"contained"} text={"Ingresar"}></NormalButton>
+      <Table></Table>
+      <TableEdit headers={["#", "Emergencia", "Acciones"]} bodyRows={["1", "Robo en San Pedro", "Eliminar"]}></TableEdit>
     </div>
   );
 }
