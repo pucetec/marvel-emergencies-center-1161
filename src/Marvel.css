@@ -1,0 +1,14 @@
+.MarvelContainer {
+  text-align: center;
+  margin: 20px;
+}
+
+.MarvelTitle {
+  color: #333; /* Cambia el color del título si lo deseas */
+}
+
+.EmergencyListsContainer {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
