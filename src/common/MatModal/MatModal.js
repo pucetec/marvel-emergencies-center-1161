@@ -13,6 +13,7 @@ import Paper from "@mui/material/Paper";
 import md5 from "crypto-js/md5";
 import axios from "axios";
 import Button from "@mui/material/Button";
+import { useEmergencyManagement } from "../../contexts/EmergencyManagementContext/EmergencyManagementContext";
 
 const style = {
   position: "absolute",
@@ -31,6 +32,8 @@ const pageSize = 5;
 const MatModal = ({ open, handleClose }) => {
   const [characters, setCharacters] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const { manageAssignHeroButton } = useEmergencyManagement();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,7 +91,7 @@ const MatModal = ({ open, handleClose }) => {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{character.name}</TableCell>
                     <TableCell>
-                      <Button variant="contained">Asignar</Button>
+                      <Button variant="contained" onClick={() => manageAssignHeroButton(character.name)}>Asignar</Button>
                     </TableCell>
                   </TableRow>
                 ))}

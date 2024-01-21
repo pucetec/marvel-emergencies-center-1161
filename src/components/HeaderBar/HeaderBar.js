@@ -5,8 +5,11 @@ import MatTextField from "../../common/MatTextField/MatTextField";
 import MatButton from "../../common/MatButton/MatButton";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
+import { useEmergencyManagement } from "../../contexts/EmergencyManagementContext/EmergencyManagementContext";
 
 const HeaderBar = () => {
+  const { manageAddEmergencyButton, setEmergencies } = useEmergencyManagement();
+
   return (
     <Container
       style={{
@@ -22,10 +25,10 @@ const HeaderBar = () => {
           <MatTypography text="Emergencias" variant="subtitle1" />
         </Grid>
         <Grid item>
-          <MatTextField label="Ingrese una emergencia" variant="outlined" />
+          <MatTextField label="Ingrese una emergencia" variant="outlined" onChange={(e) => setEmergencies(e.target.value)}/>
         </Grid>
         <Grid item>
-          <MatButton text="Buscar" variant="contained" />
+          <MatButton text="Buscar" onClick={manageAddEmergencyButton} variant="contained" />
         </Grid>
       </Grid>
     </Container>

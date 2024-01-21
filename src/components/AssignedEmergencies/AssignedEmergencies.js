@@ -3,31 +3,13 @@ import EmergencyTable from "../../common/EmergencyTable/EmergencyTable";
 import { Container } from "@mui/material";
 import DataSaverOnIcon from '@mui/icons-material/DataSaverOn';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-const headers = ["id", "Emergencia", "Heroe", "Acciones"];
-
-const data = [
-  {
-    id: 1,
-    Emergencia: "Emergencia 1",
-    Heroe: "Heroe 1",
-    Acciones: <div><DataSaverOnIcon/> <DeleteIcon/></div>,
-  },
-  {
-    id: 2,
-    Emergencia: "Emergencia 2",
-    Heroe: "Heroe 2",
-    Acciones: <div><DataSaverOnIcon/> <DeleteIcon/></div>,
-  },
-  {
-    id: 3,
-    Emergencia: "Emergencia 3",
-    Heroe: "Heroe 3",
-    Acciones: <div><DataSaverOnIcon/> <DeleteIcon/></div>,
-  },
-];
+import { useEmergencyManagement } from "../../contexts/EmergencyManagementContext/EmergencyManagementContext";
 
 const AssignedEmergencies = () => {
+  const headers = ["id", "Emergencia", "Heroe", "Acciones"];
+  
+  const { assignedEmergencies } = useEmergencyManagement();
+
   return (
     <Container
       style={{
@@ -38,7 +20,7 @@ const AssignedEmergencies = () => {
         paddingBottom: "100px",
       }}
     >
-      <EmergencyTable headers={headers} data={data} />
+      <EmergencyTable headers={headers} data={assignedEmergencies} />
     </Container>
   );
 };
