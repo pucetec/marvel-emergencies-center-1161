@@ -1,7 +1,9 @@
 import './App.css';
-import EmergencyTable from './common/EmergencyTable/EmergencyTable';
+import MatModal from './common/MatModal/MatModal';
 import MatTypography from './common/MatTypography/MatTypography';
+import AssignedEmergencies from './components/AssignedEmergencies/AssignedEmergencies';
 import HeaderBar from './components/HeaderBar/HeaderBar';
+import UnassignedEmergencies from './components/UnassignedEmergencies/UnassignedEmergencies';
 
 
 function App() {
@@ -10,7 +12,10 @@ function App() {
       <MatTypography text="Central de Emergencias" variant="h3" />
       <HeaderBar />
       <MatTypography text="Emergencias sin Asignar" variant="h4" />
-      <EmergencyTable/>
+      <UnassignedEmergencies/>
+      <MatTypography text="Emergencias Asignadas" variant="h4" />
+      <AssignedEmergencies/>
+      <MatModal/>
     </div>
   );
 }
