@@ -15,20 +15,34 @@ const HeaderBar = () => {
       style={{
         textAlign: "center",
         margin: "auto",
-        maxWidth: "500px",
+        maxWidth: "650px",
         paddingTop: "20px",
         paddingBottom: "100px",
       }}
     >
       <Grid container spacing={2}>
         <Grid item>
-          <MatTypography text="Emergencias" variant="subtitle1" />
+          <Container
+            style={{
+              paddingTop: "10px",
+            }}
+          >
+            <MatTypography text="Emergencias" variant="h6" />
+          </Container>
         </Grid>
         <Grid item>
-          <MatTextField label="Ingrese una emergencia" variant="outlined" onChange={(e) => setEmergencies(e.target.value)}/>
+          <MatTextField
+            label="Ingrese una emergencia"
+            variant="outlined"
+            onChange={(e) => setEmergencies(e.target.value)}
+          />
         </Grid>
         <Grid item>
-          <MatButton text="Buscar" onClick={manageAddEmergencyButton} variant="contained" />
+          <MatButton
+            text="Buscar"
+            onClick={manageAddEmergencyButton}
+            variant="contained"
+          />
         </Grid>
       </Grid>
     </Container>

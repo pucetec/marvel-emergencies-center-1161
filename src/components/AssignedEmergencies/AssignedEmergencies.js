@@ -1,8 +1,6 @@
 import React from "react";
 import EmergencyTable from "../../common/EmergencyTable/EmergencyTable";
 import { Container } from "@mui/material";
-import DataSaverOnIcon from '@mui/icons-material/DataSaverOn';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useEmergencyManagement } from "../../contexts/EmergencyManagementContext/EmergencyManagementContext";
 
 const AssignedEmergencies = () => {
@@ -18,6 +16,7 @@ const AssignedEmergencies = () => {
         maxWidth: "800px",
         paddingTop: "20px",
         paddingBottom: "100px",
+        hover: "pointer",
       }}
     >
       <EmergencyTable headers={headers} data={assignedEmergencies} />

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import DataSaverOnIcon from "@mui/icons-material/DataSaverOn";
-import DeleteIcon from "@mui/icons-material/Delete";
+import IconSet from "../../common/IconSet/IconSet";
 
 const EmergencyManagementContext = createContext();
 
@@ -47,19 +46,15 @@ export const EmergencyManagementContextProvider = ({ children }) => {
         Heroe: "",
         isAssigned: false,
         Acciones: (
-          <div>
-            <DeleteIcon
-              onClick={() =>
-                manageDeleteEmergencyButton(
-                  newEmergency.id,
-                  newEmergency.isAssigned
-                )
-              }
-            />{" "}
-            <DataSaverOnIcon
-              onClick={() => manageEmergencySelected(newEmergency.id)}
-            />{" "}
-          </div>
+          <IconSet
+            onClickDataSaver={() => manageEmergencySelected(newEmergency.id)}
+            onClickDelete={() =>
+              manageDeleteEmergencyButton(
+                newEmergency.id,
+                newEmergency.isAssigned
+              )
+            }
+          />
         ),
       };
       setEmergencies("");
@@ -81,21 +76,20 @@ export const EmergencyManagementContextProvider = ({ children }) => {
         isAssigned: true,
         Heroe: hero,
         Acciones: (
-          <div>
-            <DataSaverOnIcon
-              onClick={() => manageEmergencySelected(newEmergency.id)}
-            />{" "}
-            <DeleteIcon
-              onClick={() =>
-                manageDeleteEmergencyButton(
-                  newEmergency.id,
-                  newEmergency.isAssigned
-                )
-              }
-            />{" "}
-          </div>
+          <IconSet
+            onClickDataSaver={() => manageEmergencySelected(newEmergency.id)}
+            onClickDelete={() =>
+              manageDeleteEmergencyButton(
+                newEmergency.id,
+                newEmergency.isAssigned
+              )
+            }
+          />
         ),
       };
+      setAssignedEmergencies((prevEmergencies) =>
+        prevEmergencies.filter((emergency) => emergency.id !== newEmergency.id)
+      );
       setAssignedEmergencies((prevEmergencies) => [
         ...prevEmergencies,
         newEmergency,
@@ -111,19 +105,15 @@ export const EmergencyManagementContextProvider = ({ children }) => {
         isAssigned: true,
         Heroe: hero,
         Acciones: (
-          <div>
-            <DataSaverOnIcon
-              onClick={() => manageEmergencySelected(newEmergency.id)}
-            />{" "}
-            <DeleteIcon
-              onClick={() =>
-                manageDeleteEmergencyButton(
-                  newEmergency.id,
-                  newEmergency.isAssigned
-                )
-              }
-            />{" "}
-          </div>
+          <IconSet
+            onClickDataSaver={() => manageEmergencySelected(newEmergency.id)}
+            onClickDelete={() =>
+              manageDeleteEmergencyButton(
+                newEmergency.id,
+                newEmergency.isAssigned
+              )
+            }
+          />
         ),
       };
       setAssignedEmergencies((prevEmergencies) =>

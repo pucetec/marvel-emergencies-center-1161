@@ -21,7 +21,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
-  bgcolor: "background.paper",
+  bgcolor: "#f0ebd7",
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
@@ -91,7 +91,19 @@ const MatModal = ({ open, handleClose }) => {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{character.name}</TableCell>
                     <TableCell>
-                      <Button variant="contained" onClick={() => manageAssignHeroButton(character.name)}>Asignar</Button>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "#756f4b",
+                          "&:hover": {
+                            backgroundColor: "#756f4b",
+                            transform: "scale(1.1)",
+                          },
+                        }}
+                        onClick={() => manageAssignHeroButton(character.name)}
+                      >
+                        Asignar
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -99,18 +111,49 @@ const MatModal = ({ open, handleClose }) => {
             </Table>
           </TableContainer>
           <div style={{ marginTop: 10 }}>
+            Pagina
             <Button
               disabled={currentPage === 1}
+              sx={{ color: "#756f4b" }}
               onClick={() => handlePageChange(currentPage - 1)}
             >
-              Anterior
+              {currentPage}
             </Button>
-            <span style={{ margin: "0 10px" }}>Página {currentPage}</span>
             <Button
               disabled={characters.length < pageSize}
+              sx={{ color: "#756f4b" }}
               onClick={() => handlePageChange(currentPage + 1)}
             >
-              Siguiente
+              {currentPage + 1}
+            </Button>
+            <Button
+              disabled={characters.length < pageSize}
+              sx={{ color: "#756f4b" }}
+              onClick={() => handlePageChange(currentPage + 2)}
+            >
+              {currentPage + 2}
+            </Button>
+            <Button
+              disabled={characters.length < pageSize}
+              sx={{ color: "#756f4b" }}
+              onClick={() => handlePageChange(currentPage + 3)}
+            >
+              {currentPage + 3}
+            </Button>
+            <Button
+              variant="contained"
+              sx={{
+                color: "white",
+                backgroundColor: "#756f4b",
+                marginLeft: "180px",
+                "&:hover": {
+                  backgroundColor: "#756f4b",
+                  transform: "scale(1.1)",
+                },
+              }}
+              onClick={() => handleClose()}
+            >
+              Cancelar
             </Button>
           </div>
         </Box>
