@@ -10,7 +10,10 @@ function App() {
 
   const handleInsertarClick = () => {
     if (emergencia.trim() !== '') {
-      setEmergenciasSinAsignar([emergencia])
+      setEmergenciasSinAsignar((prevlist) => {
+        const counter = prevlist.length + 1
+        return [...prevlist, { id: counter, descripcion: emergencia, acciones: "eliminar" }]
+      })
       setEmergencia('');
     }
   };
@@ -39,7 +42,8 @@ function App() {
       <Row>
         <Table1
           headers={["#", "Emergencia", "Acciones"]}
-          bodies={emergenciasSinAsignar.map((emergenciaActual, index) => [index + 1, emergenciaActual, "Eliminar"])}
+          bodies={emergenciasSinAsignar}
+          keys={["id", "descripcion", "acciones"]}
         />
       </Row>
       <Row>
@@ -49,7 +53,8 @@ function App() {
       <Row>
         <Table1
           headers={["#", "Emergencia", "Heroe", "Acciones"]}
-          bodies={["1", "Robo en Central Park", "Thor", "Eliminar"]}
+          bodies={[{ id: "1", descripcion: "Robo en Central Park", superheroe: "Thor", accion: "Eliminar" }, { id: "1", descripcion: "Robo en Central Park", superheroe: "Thor", accion: "Eliminar" }]}
+          keys={["id", "descripcion", "superheroe", "accion"]}
         />
       </Row>
     </Container>

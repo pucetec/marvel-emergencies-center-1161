@@ -1,6 +1,6 @@
 import { Table } from "react-bootstrap";
 
-const Table1 = ({ headers, bodies }) => {
+const Table1 = ({ headers, bodies, keys }) => {
   const cellStyle = {
     textAlign: "center",
     verticalAlign: "middle",
@@ -21,13 +21,15 @@ const Table1 = ({ headers, bodies }) => {
         </thead>
         <tbody>
           {bodies.length > 0 && (
-            <tr>
-              {bodies.map((element, cellIndex) => (
-                <td key={cellIndex} style={cellStyle}>
-                  {element}
-                </td>
-              ))}
-            </tr>
+            bodies.map((element, cellIndex) => (
+              <tr>
+                {keys.map((key, position) => (
+                  <td key={cellIndex} style={cellStyle}>
+                    {element[key]}
+                  </td>
+                ))}
+              </tr>
+            ))
           )}
         </tbody>
       </Table>
