@@ -2,8 +2,19 @@ import { Form, Button, Col, Container, Row } from "react-bootstrap";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 import Table1 from "./components/Table/Table1";
+import { useState } from "react";
 
 function App() {
+  const [emergencia, setEmergencia] = useState('');
+  const [emergenciasSinAsignar, setEmergenciasSinAsignar] = useState([]);
+
+  const handleInsertarClick = () => {
+    if (emergencia.trim() !== '') {
+      setEmergenciasSinAsignar([emergencia])
+      setEmergencia('');
+    }
+  };
+
   return (
     <Container className="App">
       <Row>
@@ -12,10 +23,13 @@ function App() {
       <Row>
         <Col>Emergencia</Col>
         <Col>
-          <Form.Control />
+          <Form.Control
+            value={emergencia}
+            onChange={(e) => setEmergencia(e.target.value)}
+          />
         </Col>
         <Col>
-          <Button>Ingresar</Button>
+          <Button onClick={handleInsertarClick}>Ingresar</Button>
         </Col>
       </Row>
       <Row>
@@ -25,7 +39,7 @@ function App() {
       <Row>
         <Table1
           headers={["#", "Emergencia", "Acciones"]}
-          bodies={["1", "Robo en Fake Street", "Eliminar"]}
+          bodies={emergenciasSinAsignar.map((emergenciaActual, index) => [index + 1, emergenciaActual, "Eliminar"])}
         />
       </Row>
       <Row>
