@@ -1,7 +1,8 @@
 import React from "react";
+import { TextField } from "@mui/material";
 
 const TextInput = () => {
-  return <input type="text"></input>
+  return <TextField ></TextField>
 };
 
 export default TextInput;

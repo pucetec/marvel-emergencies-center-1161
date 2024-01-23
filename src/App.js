@@ -1,14 +1,15 @@
 import TopAddEmergemcy from "./componentes/topAddEmergency/TopAddEmergency";
-import Table from "./componentes/table/Table";
+import EmergencyWithoutAsignation from "./componentes/emergencyWithoutAssignment/EmergencyWithoutAssignment";
+import AsignatedEmergency from "./componentes/assignatedEmergency/AssignatedEmergency";
 
 function App() {
   return (
     <div >
       <TopAddEmergemcy />
-      <Table 
-        headers={["#", "Emergencia", "Acciones"]}
-        bodyContent={["1", "Robo en Fake Street 1234", "Asignar o suprimir"]}
-      />
+      <center>
+        <EmergencyWithoutAsignation />
+        <AsignatedEmergency />
+      </center>
     </div>
   );
 }
