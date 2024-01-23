@@ -3,6 +3,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 import Table1 from "./components/Table/Table1";
 import { useState } from "react";
+import DeleteIcon from "./images/DeleteIcon";
 
 function App() {
   const [emergencia, setEmergencia] = useState('');
@@ -11,11 +12,18 @@ function App() {
   const handleInsertarClick = () => {
     if (emergencia.trim() !== '') {
       setEmergenciasSinAsignar((prevlist) => {
-        const counter = prevlist.length + 1
-        return [...prevlist, { id: counter, descripcion: emergencia, acciones: "eliminar" }]
+        return [...prevlist, { descripcion: emergencia }]
       })
       setEmergencia('');
     }
+  };
+
+  const onDeleteClick = (index) => {
+    setEmergenciasSinAsignar((prevlist) => {
+      const updatedList = [...prevlist];
+      updatedList.splice(index, 1); // Eliminar la fila en el índice especificado
+      return updatedList;
+    });
   };
 
   return (
@@ -42,7 +50,12 @@ function App() {
       <Row>
         <Table1
           headers={["#", "Emergencia", "Acciones"]}
-          bodies={emergenciasSinAsignar}
+          bodies={emergenciasSinAsignar.map((row, index) => ({
+            ...row,
+            id: index + 1,
+            acciones:
+              <Button variant="danger" onClick={() => onDeleteClick(index)}><DeleteIcon /></Button>
+          }))}
           keys={["id", "descripcion", "acciones"]}
         />
       </Row>
@@ -58,6 +71,7 @@ function App() {
         />
       </Row>
     </Container>
+
   );
 }
 
