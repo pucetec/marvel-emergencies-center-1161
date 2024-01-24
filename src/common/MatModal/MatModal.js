@@ -10,7 +10,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import md5 from "crypto-js/md5";
+import md5 from "md5";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import { useEmergencyManagement } from "../../contexts/EmergencyManagementContext/EmergencyManagementContext";
