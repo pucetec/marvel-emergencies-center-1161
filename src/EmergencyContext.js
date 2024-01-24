@@ -1,49 +1,20 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 export const EmergencyContext = createContext();
 
 export const EmergencyProvider = ({ children }) => {
-  const [emergencies, setEmergencies] = useState([
-    { id: 1, description: "Robo en Fake street 1234", hero: null },
-    { id: 2, description: "Secuestro en edificio Empire States", hero: null },
-  ]);
-  const [heroes, setHeroes] = useState([
-    { id: 1, name: "Spiderman" },
-    { id: 2, name: "Iron Man" },
-    { id: 3, name: "Thor" },
-  ]);
+  const [emergencies, setEmergencies] = useState([]);
+  const [heroes, setHeroes] = useState([]);
 
-  const addEmergency = (description) => {
-    setEmergencies((prevEmergencies) => [
-      ...prevEmergencies,
-      {
-        id: prevEmergencies.length + 1,
-        description,
-        hero: null,
-      },
-    ]);
-  };
-
-  const updateEmergencyHero = (emergencyId, heroId) => {
-    setEmergencies((prevEmergencies) =>
-      prevEmergencies.map((emergency) =>
-        emergency.id === emergencyId
-          ? { ...emergency, hero: heroId }
-          : emergency
-      )
-    );
-  };
+  const contextValue = { emergencies, setEmergencies, heroes, setHeroes };
 
   return (
-    <EmergencyContext.Provider
-      value={{
-        emergencies,
-        heroes,
-        addEmergency,
-        updateEmergencyHero,
-      }}
-    >
+    <EmergencyContext.Provider value={contextValue}>
       {children}
     </EmergencyContext.Provider>
   );
+};
+
+export const useEmergencyContext = () => {
+  return useContext(EmergencyContext);
 };

@@ -1,35 +1,102 @@
-import React, { useContext } from "react";
-import { EmergencyContext } from "./EmergencyContext";
+import React, { useState } from "react";
+import { useEmergencyContext } from "./EmergencyContext";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Button,
+  MenuItem,
+  Select,
+} from "@mui/material";
+import SquareWithDotIcon from "@mui/icons-material/RadioButtonUnchecked";
+import TrashCanIcon from "@mui/icons-material/Delete";
 
-function EmergencyList() {
-  const { emergencies, assignHeroToEmergency } = useContext(EmergencyContext);
+const EmergencyList = () => {
+  const { emergencies, heroes, assignHeroToEmergency } = useEmergencyContext();
+  const [selectedHeroId, setSelectedHeroId] = useState("");
+
+  const handleAssignHero = (emergencyId) => {
+    if (selectedHeroId) {
+      assignHeroToEmergency(emergencyId, selectedHeroId);
+      setSelectedHeroId("");
+    }
+  };
+
+  const handleRemoveAssignment = (emergencyId) => {
+    assignHeroToEmergency(emergencyId, null);
+  };
+
+  const unassignedEmergencies = emergencies.filter((e) => !e.hero);
+  const assignedEmergencies = emergencies.filter((e) => e.hero);
 
   return (
     <div>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <center>Emergencia</center>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {emergencies.map((emergency, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{emergency.description}</td>
-              <td>
-                <button onClick={() => assignHeroToEmergency(emergency.id)}>
-                  Asignar Héroe
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h2>Emergencias Sin Asignar</h2>
+      <List>
+        {unassignedEmergencies.map((emergency) => (
+          <ListItem key={emergency.id}>
+            <ListItemText
+              primary={`#${emergency.id} - ${emergency.description}`}
+            />
+            {!emergency.hero && (
+              <div>
+                <Select
+                  value={selectedHeroId}
+                  onChange={(e) => setSelectedHeroId(e.target.value)}
+                  displayEmpty
+                  fullWidth
+                  variant="outlined"
+                >
+                  <MenuItem value="" disabled>
+                    Asigna tu super Héroe
+                  </MenuItem>
+                  {heroes.map((hero) => (
+                    <MenuItem key={hero.id} value={hero.id}>
+                      {hero.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleAssignHero(emergency.id)}
+                >
+                  <SquareWithDotIcon />
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => handleRemoveAssignment(emergency.id)}
+                >
+                  <TrashCanIcon />
+                </Button>
+              </div>
+            )}
+          </ListItem>
+        ))}
+      </List>
+      <h2>Emergencias Asignadas</h2>
+      <List>
+        {assignedEmergencies.map((emergency) => (
+          <ListItem key={emergency.id}>
+            <ListItemText
+              primary={`#${emergency.id} - ${emergency.description}`}
+              secondary={`Asignado a: ${
+                heroes.find((hero) => hero.id === emergency.hero)?.name
+              }`}
+            />
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => handleRemoveAssignment(emergency.id)}
+            >
+              <TrashCanIcon />
+            </Button>
+          </ListItem>
+        ))}
+      </List>
     </div>
   );
-}
+};
 
 export default EmergencyList;
