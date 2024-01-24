@@ -1,16 +1,20 @@
 import TopAddEmergemcy from "./componentes/topAddEmergency/TopAddEmergency";
 import EmergencyWithoutAsignation from "./componentes/emergencyWithoutAssignment/EmergencyWithoutAssignment";
 import AsignatedEmergency from "./componentes/assignatedEmergency/AssignatedEmergency";
+import { EmergencyContextManagementProvider } from "./context/EmergencyContextManagement";
 
-function App() {
+const App = () => {
   return (
-    <div >
-      <TopAddEmergemcy />
-      <center>
-        <EmergencyWithoutAsignation />
-        <AsignatedEmergency />
-      </center>
-    </div>
+    <EmergencyContextManagementProvider>
+
+      <div >
+        <TopAddEmergemcy />
+        <center>
+          <EmergencyWithoutAsignation />
+          <AsignatedEmergency />
+        </center>
+      </div>
+    </EmergencyContextManagementProvider>
   );
 }
 
