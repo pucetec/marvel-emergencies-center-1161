@@ -1,19 +1,56 @@
-import { Table } from '@mui/material';
 import './App.css';
-import NormalButton from './common/Button/NormalButton';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import TableEdit from './common/Table/Table';
-import TextInput from './common/Text/TextInput';
+import Header from './components/Header/Header';
+import md5 from 'md5';
+import axios from 'axios';
+
+const PUBLIC_KEY = "916623a213e8ba738f6a24edd1ee93c0";
+const PRIVATE_KEY = "4b532143f4231452f7a3767e6baaadc4542d81dc";
+const GATEWAY = "http://gateway.marvel.com/v1/public/characters";
 
 const App = () => {
+  
+  const [heroData, setHeroData] = useState(null);
+
+  useEffect(() => {
+    bringMarvelInfo();
+  }, []);
+
+  const bringMarvelInfo = async () => {
+    try{
+    const curretTimestamp = Date.now().toString();
+    const joinedKey = curretTimestamp + PRIVATE_KEY + PUBLIC_KEY; 
+    const md5Key = md5(joinedKey);
+
+    const response = await axios.get(
+      GATEWAY + PUBLIC_KEY + "&TS" + curretTimestamp + "&hash=" + md5Key,
+      {
+        headers: {
+          Accept: "*/*",
+        },
+      }
+    );
+    setHeroData(response.data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
+  }
+
   return (
-    <div className="App">
-      <h1>Central de Emergemcia</h1>
-      <TextInput text={"Emergencia"}></TextInput>
-      <NormalButton variant={"contained"} text={"Ingresar"}></NormalButton>
-      <Table></Table>
-      <TableEdit headers={["#", "Emergencia", "Acciones"]} bodyRows={["1", "Robo en San Pedro", "Eliminar"]}></TableEdit>
-    </div>
+      <div className='centered-content'>
+      <Header></Header>
+      <br></br>
+      <br></br>
+      {heroData && (
+      <TableEdit headers={["#", "Emergencia", "Acciones"]} bodyRows={heroData.data.results.map((hero, index) => [
+            index + 1,
+            hero.name,
+            hero.description || "Sin descripción",
+          ])} ></TableEdit>
+      )}
+      </div>
   );
 }
 
