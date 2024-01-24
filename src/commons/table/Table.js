@@ -14,13 +14,14 @@ const Table = ({ headers, bodyContent }) => {
         </tr>
       </thead>
       <tbody>
-      {unassignedEmergencyList.map((item, index) => {
+      {bodyContent.map((cellContent, index) => {
       return <tr key={index}>
               <td scope="row">{index + 1}</td>
-              <td>{item.emergency}</td>
+              <td>{cellContent.emergency}</td>
               <td><ActionIcons /></td>
             </tr> 
-})}
+})
+}
         
       </tbody>
     </table>

@@ -2,9 +2,9 @@ import React from "react";
 import { TextField } from "@mui/material";
 import { useEmergency } from "../../context/EmergencyContextManagement";
 
-const TextInput = () => {
+const TextInput = ({ value, onChange}) => {
   const { setNewEmergencyName } = useEmergency();
-  return <TextField onChange={(e) => setNewEmergencyName(e.target.value)}></TextField>
+  return <TextField value={value} onChange={onChange}></TextField>
 };
 
 export default TextInput;
