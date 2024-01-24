@@ -1,13 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import md5 from 'md5';
+import axios from 'axios';
+
+// Components
+import Button from "./Components/Button/Button";
 
 function App() {
 
-  const heroList = {
-    name: "Thor",
-    name: "Iron Man"
-  }
+
+  const PUBLIC_KEY = "758b39b923384db09734503e705b0481";
+  const PRIVATE_KEY = "064eeabf0a9554f2bf531ff4af173aadc955957b";
+  const GATEWAY = "http://gateway.marvel.com/v1/public/characters?";
+
+  const timestamp = new Date().getTime();
+  const hash = md5(timestamp + PRIVATE_KEY + PUBLIC_KEY);
+
+  const url = `${GATEWAY}ts=${timestamp}&apikey=${PUBLIC_KEY}&hash=${hash}`;
+
+  const [heroList, setHeroList] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(url);
+        const heroes = response.data.data.results.map((hero) => ({
+          name: hero.name,
+          status: true,
+        }));
+        setHeroList(heroes);
+      } catch (error) {
+        console.error("Error en la API: ", error);
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array
+
 
   const [emergencia, setEmergencia] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null); // Nuevo estado para almacenar el usuario seleccionado
   const [emergenciasSinAsignar, setEmergenciasSinAsignar] = useState([]);
   const [emergenciasAsignadas, setEmergenciasAsignadas] = useState([]);
 
@@ -26,6 +57,64 @@ function App() {
     setEmergenciasSinAsignar([...emergenciasSinAsignar, nuevaEmergencia]);
     setEmergencia("");
   };
+
+  const handleModalOpen = (user) => {
+    setSelectedUser(user); // Al abrir el modal, guarda el usuario seleccionado
+  };
+
+  const handleHeroAsignarClick = (hero) => {
+    if (selectedUser) {
+      // Verifica que el héroe tenga un nombre antes de asignarlo
+      const heroeAsignado = hero.name;
+
+      // Recorre la lista de héroes
+      const updatedHeroList = heroList.map((h) => {
+        // Verifica si el nombre del héroe coincide con el héroe asignado
+        if (h.name === heroeAsignado) {
+          // Al asignar un héroe, cambia el estado (status) a false
+          return { ...h, status: false };
+        } else {
+          return h;
+        }
+      });
+
+      // Al asignar un héroe, agrega el usuario y el héroe asignado a la segunda tabla
+      const emergenciaAsignada = {
+        ...selectedUser,
+        heroe: heroeAsignado,
+      };
+
+      setEmergenciasAsignadas([...emergenciasAsignadas, emergenciaAsignada]);
+      setEmergenciasSinAsignar(emergenciasSinAsignar.filter((e) => e.id !== selectedUser.id));
+      setSelectedUser(null);
+      setHeroList(updatedHeroList); // Actualiza la lista de héroes con el estado cambiado
+    }
+  };
+
+  const handleEliminarAsignadoClick = (emergencia) => {
+    // Cambiar el estado del héroe a true en la lista de héroes
+    const updatedHeroList = heroList.map((h) => {
+      if (h.name === emergencia.heroe) {
+        return { ...h, status: true };
+      } else {
+        return h;
+      }
+    });
+
+    // Agregar el usuario nuevamente a la lista de emergencias sin asignar
+    setEmergenciasSinAsignar([...emergenciasSinAsignar, emergencia]);
+
+    // Eliminar el usuario de la lista de emergencias asignadas
+    setEmergenciasAsignadas(emergenciasAsignadas.filter((e) => e.id !== emergencia.id));
+
+    // Actualizar la lista de héroes
+    setHeroList(updatedHeroList);
+  };
+
+  const handleEliminarSinAsignarClick = (emergencia) => {
+    setEmergenciasSinAsignar(emergenciasSinAsignar.filter((e) => e.id !== emergencia.id));
+  };
+
 
   return (
     <div className="App container">
@@ -48,9 +137,11 @@ function App() {
           <label htmlFor="floatingInput">Emergencia</label>
         </div>
         <div>
-          <button className="btn btn-primary" onClick={handleIngresarClick}>
-            Ingresar
-          </button>
+          <Button
+            className={"btn btn-primary"}
+            onClick={handleIngresarClick}
+            text={"Ingresar"}
+          />
         </div>
       </div>
 
@@ -70,16 +161,19 @@ function App() {
                 <th scope="row">{index + 1}</th>
                 <td>{emergencia.nombre}</td>
                 <td>
-                  <button
-                    className="btn btn-link"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal2"
-                  >
-                    <i className="bi bi-app-indicator"></i>
-                  </button>
-                  <button className="btn btn-link">
-                    <i className="bi bi-trash"></i>
-                  </button>
+                  <Button
+                    className={"btn btn-link"}
+                    dataBsTarget={"#exampleModal2"}
+                    dataBsToggle={"modal"}
+                    onClick={() => handleModalOpen(emergencia)}
+                    text={<i className="bi bi-app-indicator"></i>}
+                  />
+
+                  <Button
+                    className={"btn btn-link"}
+                    onClick={() => handleEliminarSinAsignarClick(emergencia)}
+                    text={<i className="bi bi-trash"></i>}
+                  />
                 </td>
               </tr>
             ))}
@@ -89,12 +183,8 @@ function App() {
 
 
       <div className="my-5">
-
-        <h4 className="my-5">
-          Emergencias asignadas
-        </h4>
-
-        <table class="table">
+        <h4 className="my-5">Emergencias asignadas</h4>
+        <table className="table">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -108,17 +198,13 @@ function App() {
               <tr key={index}>
                 <th scope="row">{index + 1}</th>
                 <td>{emergencia.nombre}</td>
+                <td>{emergencia.heroe}</td>
                 <td>
-                  <button
-                    className="btn btn-link"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal2"
-                  >
-                    <i className="bi bi-app-indicator"></i>
-                  </button>
-                  <button className="btn btn-link">
-                    <i className="bi bi-trash"></i>
-                  </button>
+                  <Button
+                    className={"btn btn-link"}
+                    onClick={() => handleEliminarAsignadoClick(emergencia)}
+                    text={<i className="bi bi-trash"></i>}
+                  />
                 </td>
               </tr>
             ))}
@@ -126,15 +212,15 @@ function App() {
         </table>
       </div>
 
-      <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div className="modal fade" id="exampleModal2" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-              <table class="table">
+            <div className="modal-body">
+              <table className="table">
                 <thead>
                   <tr>
                     <th scope="col">#</th>
@@ -143,21 +229,19 @@ function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>
-                      <button className="btn btn-primary">
-                        Asignar
-                      </button>
-                    </td>
-                  </tr>
+                  {heroList.map((hero, index) => (
+                    <tr key={index}>
+                      <th scope="row">{index + 1}</th>
+                      <td>{hero.name}</td>
+                      <td>
+                        <button className={hero.status ? "btn btn-primary" : "btn btn-primary disabled"} onClick={() => handleHeroAsignarClick(hero)} data-bs-dismiss="modal">
+                          {hero.status ? "Asignar" : "Asignado"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
             </div>
           </div>
         </div>
