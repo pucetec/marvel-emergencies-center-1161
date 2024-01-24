@@ -1,23 +1,27 @@
-import logo from './logo.svg';
+import { Table } from '@mui/material';
 import './App.css';
+import NormalButton from './common/Button/NormalButton';
+import React from 'react';
+import TableEdit from './common/Table/Table';
+import TextInput from './common/Text/TextInput';
+import md5 from 'md5';
 
-function App() {
+const GATEWAY = "https://gateway.marvel.com:443/v1/public/characters";
+const PUBLICKEY = "006cabd20cdbdf4894ee560b396cf790";
+const PRIVATEKEY = "92c6fc7926af72efb60334467ad9441a011d40e9";
+
+
+
+
+const App = () => {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      
+      <h1>Emergency Center</h1>
+      <TextInput text={"Emergencia"}></TextInput>
+      <NormalButton variant={"contained"} text={"Ingresar"}></NormalButton>
+      <Table></Table>
+      <TableEdit headers={["#", "Emergencia", "Acciones"]} bodyRows={["1", "Robo en San Siro", "Eliminar"]}></TableEdit>
     </div>
   );
 }
