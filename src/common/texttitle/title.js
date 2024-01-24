@@ -4,6 +4,7 @@ const TextTitle=()=>{
         <div>
         <Heading>Central de emergencia</Heading>
         </div>
+        
     );
 }
 export default TextTitle;
