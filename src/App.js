@@ -1,63 +1,48 @@
+// App.js
 import React, { useState } from 'react';
+import EntradaEmergencia from './componets/EntradaEmergencias/EntradaEmergencias';
+import ListaEmergencias from './componets/ListaEmergencias/ListaEmergencias';
+import Modal from './componets/modal/Modal'; // Asegúrate de importar el componente Modal
 
-function App() {
-  const [emergencia, setEmergencia] = useState('');
+const App = () => {
   const [emergenciasList, setEmergenciasList] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const agregarEmergencia = () => {
-    if (emergencia.trim() !== '') {
-      const nuevaEmergencia = `${emergenciasList.length + 1}. ${emergencia}`;
-      setEmergenciasList([...emergenciasList, nuevaEmergencia]);
-      setEmergencia('');
-    }
+  const agregarEmergencia = (nuevaEmergencia) => {
+    setEmergenciasList([...emergenciasList, nuevaEmergencia]);
+  };
+
+  const handleMasClick = () => {
+    setModalVisible(true);
+  };
+
+  const handleBasuraClick = (index) => {
+    const nuevasEmergenciasList = [...emergenciasList];
+    nuevasEmergenciasList.splice(index, 1);
+    setEmergenciasList(nuevasEmergenciasList);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
   };
 
   return (
     <div>
       <h1>Central de Emergencia</h1>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1cm' }}>
-        <h2 style={{ marginRight: '1cm' }}>Emergencia</h2>
-        <input
-          type="text"
-          placeholder="Ingrese la emergencia"
-          value={emergencia}
-          onChange={(e) => setEmergencia(e.target.value)}
-          style={{
-            padding: '0.5cm',
-            fontSize: '0.8em',
-            border: '2px solid #ccc',
-            borderRadius: '5px',
-            marginRight: '1cm',
-          }}
+      <EntradaEmergencia onAgregarEmergencia={agregarEmergencia} />
+      {emergenciasList.length > 0 && (
+        <ListaEmergencias
+          emergenciasList={emergenciasList}
+          onMasClick={handleMasClick}
+          onBasuraClick={handleBasuraClick}
         />
-        <button
-          onClick={agregarEmergencia}
-          style={{
-            fontSize: '0.8em',
-            padding: '0.5cm',
-            border: '2px solid #ccc',
-            borderRadius: '5px',
-          }}
-        >
-          Agregar Emergencia
-        </button>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Emergencia sin asignar</th>
-          </tr>
-        </thead>
-        <tbody>
-          {emergenciasList.map((emergencia, index) => (
-            <tr key={index}>
-              <td style={{ marginBottom: '1cm' }}>{emergencia}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      )}
+
+      <Modal visible={modalVisible} onClose={closeModal} />
     </div>
   );
 }
 
 export default App;
+
+
