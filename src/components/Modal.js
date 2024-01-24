@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
-const Superheroes = () => {
+const SuperheroesModal = () => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -30,6 +30,6 @@ const Superheroes = () => {
       </Modal>
     </>
   );
-}
+};
 
-export default Superheroes;
+export default SuperheroesModal;
