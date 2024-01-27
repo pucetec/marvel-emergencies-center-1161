@@ -3,6 +3,7 @@ import { useState } from "react";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CropFreeIcon from "@mui/icons-material/CropFree";
+import Modal from ".//Modal/Modal.js";
 
 const Public_key = "162bf646746d2cfe7d66d6a27b6a90dc";
 const Private_key = "68979345d9ee3d74351b46edfdb64e657db8c73a";
@@ -14,7 +15,7 @@ const App = () => {
     setEmergencyText(event.target.value);
   };
   const handleButtonClick = () => {
-    console.log("Valor del input:", emergencyText);
+    console.log("Valor del inBasicModalput:", emergencyText);
   };
 
   return (
@@ -52,6 +53,7 @@ const App = () => {
             <div>
               <Button variant="contained" startIcon={<DeleteIcon />}></Button>
               <Button variant="text" startIcon={<CropFreeIcon />}></Button>
+              <Modal></Modal>
             </div>
           </td>
         </table>
