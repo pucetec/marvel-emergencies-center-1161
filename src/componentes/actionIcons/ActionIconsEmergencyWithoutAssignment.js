@@ -1,14 +1,17 @@
 import React from "react";
 import DeleteSharpIcon from '@mui/icons-material/DeleteSharp';
 import AssignmentInd from "@mui/icons-material/AssignmentInd";
+import ModalMaterial from "../../commons/modal/ModalMaterial";
 
-const ActionIcons = () => {
+const ActionIconsEmergencyWithoutAssignment = ({ onClick, index, open, onClose, onClick2 }) => {
+
     return (
         <div>
-            <AssignmentInd sx={{ fontSize: 40 }} />
-            <DeleteSharpIcon sx={{ fontSize: 40 }} />
+            <AssignmentInd onClick={onClick2} sx={{ fontSize: 40 }} />
+            <DeleteSharpIcon onClick={() => onClick(index)} sx={{ fontSize: 40 }} />
+            <ModalMaterial open={open} onClose={onClose} />
         </div>
     );
 };
 
-export default ActionIcons;
+export default ActionIconsEmergencyWithoutAssignment;

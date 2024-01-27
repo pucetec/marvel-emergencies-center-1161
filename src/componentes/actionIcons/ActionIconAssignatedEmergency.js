@@ -2,7 +2,7 @@ import React from "react";
 import DeleteSharpIcon from '@mui/icons-material/DeleteSharp';
 import AssignmentInd from "@mui/icons-material/AssignmentInd";
 
-const ActionIcons = () => {
+const ActionIconsAssignateEmergency = () => {
     return (
         <div>
             <DeleteSharpIcon sx={{ fontSize: 40 }} />
@@ -11,4 +11,4 @@ const ActionIcons = () => {
     );
 };
 
-export default ActionIcons;
+export default ActionIconsAssignateEmergency;

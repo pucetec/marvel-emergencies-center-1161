@@ -1,15 +1,20 @@
 import React from "react";
 import Typography from "../../commons/typography/Typography";
-import Table from "../../commons/table/Table";
-import ActionIcons from "../actionIcons/ActionIconsEmergencyWithoutAssignment";
+import NoAssigneTable from "../../commons/tables/NoAssigneTable";
 
-const EmergencyWithoutAsignation = ({ bodyContent }) => {
+
+const EmergencyWithoutAsignation = ({ bodyContent, onClick, open, onClick2, onClose }) => {
+  
   return (
     <div>
       <Typography level={"h2"} text={"Emergencias sin asignar"} />
-      <Table 
+      <NoAssigneTable 
         headers={["#", "Emergencia", "Acciones"]}
         bodyContent={bodyContent}
+        onClick={onClick}
+        open={open}
+        onClick2={onClick2}
+        onClose={onClose}
        />
     </div>
   );
