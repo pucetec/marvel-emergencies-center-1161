@@ -2,7 +2,7 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import { Box } from '@mui/material';
 
-const NormalButton = ({text, variant}) => {
+const NormalButton = ({text, variant, onClick}) => {
   return (
     <Box
       component="form"
@@ -12,7 +12,7 @@ const NormalButton = ({text, variant}) => {
       noValidate
       autoComplete="off"
     >
-      <Button variant={variant}>{text}</Button>
+      <Button variant={variant} onClick={onClick}>{text}</Button>
     </Box>
   );
 }

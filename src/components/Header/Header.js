@@ -2,13 +2,13 @@ import React from "react";
 import TextInput from "../../common/Text/TextInput";
 import NormalButton from "../../common/Button/NormalButton";
 
-const Header = () => {
+const Header = ({onEmergencyChange, onButtonClick}) => {
   return (
     <div style={{textAlign:"center"}}>
       <h1>Central de Emergencia</h1>
       <div style={{display: "flex"}}>
-      <TextInput text={"Emergencia"}></TextInput>
-      <NormalButton variant={"contained"} text={"Ingresar"}></NormalButton>
+      <TextInput text={"Emergencia"} onChange={onEmergencyChange}></TextInput>
+      <NormalButton variant={"contained"} text={"Ingresar"} onClick={onButtonClick}></NormalButton>
       </div>
     </div>
   );

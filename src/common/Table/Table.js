@@ -1,3 +1,4 @@
+import React from "react";
 
 const TableEdit = ({headers, bodyRows}) => {
   return (
@@ -10,11 +11,17 @@ const TableEdit = ({headers, bodyRows}) => {
             ))}
           </tr>
         </thead>
-        <tr>
-          {bodyRows.map((element) => (
-              <td style={{padding: "10px", border: "1px solid #ddd"}}>{element}</td>
-            ))}
-        </tr>
+        <tbody>
+          {bodyRows.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {row.map((element, columnIndex) => (
+                <td key={columnIndex} style={{ padding: "10px", border: "1px solid #ddd" }}>
+                  {element}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
