@@ -7,6 +7,7 @@ import axios from 'axios';
 import DeleteButton from './common/Button/DeleteButton';
 import AddButton from './common/Button/AddButton';
 import FloatButton from './common/Test/Tests';
+import BasicModal from './common/Modal/PopUp';
 
 const PUBLIC_KEY = "916623a213e8ba738f6a24edd1ee93c0";
 const PRIVATE_KEY = "4b532143f4231452f7a3767e6baaadc4542d81dc";
@@ -46,6 +47,7 @@ const App = () => {
     setAddEmergency(event.target.value);
   };
 
+  
   const handleButtonClick = () => {
     setEmergency((prevEmergency) => [...prevEmergency, addEmergency]);
     setAddEmergency("");
@@ -71,6 +73,7 @@ const App = () => {
             hero.description,
           ])} ></TableEdit>
       )}
+      <BasicModal></BasicModal>
       </div>
   );
 }
