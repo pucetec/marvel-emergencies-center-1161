@@ -2,33 +2,22 @@ import { Form, Button, Col, Container, Row } from "react-bootstrap";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 import Table1 from "./components/Table/Table1";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteIcon from "./images/DeleteIcon";
 import axios from "axios";
 import md5 from "md5";
 import { Modal } from "react-bootstrap";
+import PersonIcon from "./images/PersonIcon";
 
-const PUBLIC_KEY = "958bc01f82c872a2e185e14294103a06";
-const PRIVATE_KEY = "befc4e63a286e2158005c4e9a3f84c20c8ee1ae4";
+const PUBLIC_KEY = "7361da9998833a4fb0adfacf7144bc6e";
+const PRIVATE_KEY = "6699a8eea6b425a1c2d14dfcce8b46c0c91b5817";
 const GATEWAY = "https://gateway.marvel.com:443/v1/public/characters?";
 
 function App() {
   const [emergencia, setEmergencia] = useState("");
   const [emergenciasSinAsignar, setEmergenciasSinAsignar] = useState([]);
   const [heroes, setHeroes] = useState([]);
-
-  const marvelInfo = async () => {
-    const timeStamp = Date.now().toString();
-    const hash = timeStamp + PRIVATE_KEY + PUBLIC_KEY;
-    const md5Key = md5(hash);
-
-    const response = await axios.get(
-      GATEWAY + "ts=" + timeStamp + "&apikey=" + PUBLIC_KEY + "&hash=" + md5Key
-    );
-    console.log({ response: response.data.data.results });
-    setHeroes(response.data.data.results);
-  };
-  marvelInfo();
+  const [emergenciasAsignadas, setEmergenciasAsignadas] = useState([]);
 
   const [show, setShow] = useState(false);
 
@@ -51,6 +40,29 @@ function App() {
       return updatedList;
     });
   };
+
+  useEffect(() => {
+    const marvelInfo = async () => {
+      const timeStamp = Date.now().toString();
+      const hash = timeStamp + PRIVATE_KEY + PUBLIC_KEY;
+      const md5Key = md5(hash);
+
+      const response = await axios.get(
+        GATEWAY +
+          "ts=" +
+          timeStamp +
+          "&apikey=" +
+          PUBLIC_KEY +
+          "&hash=" +
+          md5Key
+      );
+      console.log({ response: response });
+      setHeroes(response.data.data.results);
+    };
+    if (heroes.length === 0) {
+      marvelInfo();
+    }
+  }, []);
 
   return (
     <Container className="App">
@@ -83,7 +95,7 @@ function App() {
               <div>
                 <>
                   <Button variant="primary" onClick={handleShow}>
-                    Heroes
+                    <PersonIcon />
                   </Button>
 
                   <Modal show={show} onHide={handleClose}>
