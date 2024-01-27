@@ -4,6 +4,8 @@ import axios from 'axios';
 
 // Components
 import Button from "./Components/Button/Button";
+import Input from "./Components/Input/Input";
+import Table from "./Common/Table/Table";
 
 function App() {
 
@@ -125,91 +127,63 @@ function App() {
 
       <div className="d-inline-flex gap-4 align-items-center my-5">
         <h5 className="m-0">Emergencia</h5>
-        <div className="form-floating">
-          <input
-            type="text"
-            className="form-control"
-            id="floatingInput"
-            placeholder="Ingrese emergencia"
-            value={emergencia}
+
+          <Input 
+            className={"text"}
+            id={"floatingInput"}
             onChange={handleInputChange}
+            placeholder={"Ingrese emergencia"}
+            type={"text"}
+            value={emergencia}
           />
-          <label htmlFor="floatingInput">Emergencia</label>
-        </div>
+
         <div>
+
           <Button
             className={"btn btn-primary"}
             onClick={handleIngresarClick}
             text={"Ingresar"}
           />
+
         </div>
       </div>
 
       <div className="my-5">
         <h4 className="my-5">Emergencias sin asignar</h4>
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Emergencia</th>
-              <th scope="col">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {emergenciasSinAsignar.map((emergencia, index) => (
-              <tr key={index}>
-                <th scope="row">{index + 1}</th>
-                <td>{emergencia.nombre}</td>
-                <td>
-                  <Button
-                    className={"btn btn-link"}
-                    dataBsTarget={"#exampleModal2"}
-                    dataBsToggle={"modal"}
-                    onClick={() => handleModalOpen(emergencia)}
-                    text={<i className="bi bi-app-indicator"></i>}
-                  />
 
-                  <Button
-                    className={"btn btn-link"}
-                    onClick={() => handleEliminarSinAsignarClick(emergencia)}
-                    text={<i className="bi bi-trash"></i>}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <Table
+          className={"btn btn-link"}
+          dataBsTarget={"#exampleModal2"}
+          dataBsToggle={"modal"}
+          handleModalOpen={handleModalOpen}
+          handleEliminarSinAsignarClick={handleEliminarSinAsignarClick}
+          handleEliminarAsignadoClick={handleEliminarAsignadoClick}
+          AddIcon={<i className="bi bi-app-indicator"></i>}
+          DeleteIcon={<i className="bi bi-trash"></i>}
+          emergenciasSinAsignar={emergenciasSinAsignar}
+          emergenciasAsignadas={emergenciasAsignadas}
+          columnas={["ID", "Nombre", "Acciones"]}
+        />
+
       </div>
-
 
       <div className="my-5">
         <h4 className="my-5">Emergencias asignadas</h4>
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Emergencia</th>
-              <th scope="col">Heroe</th>
-              <th scope="col">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {emergenciasAsignadas.map((emergencia, index) => (
-              <tr key={index}>
-                <th scope="row">{index + 1}</th>
-                <td>{emergencia.nombre}</td>
-                <td>{emergencia.heroe}</td>
-                <td>
-                  <Button
-                    className={"btn btn-link"}
-                    onClick={() => handleEliminarAsignadoClick(emergencia)}
-                    text={<i className="bi bi-trash"></i>}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+        <Table
+          className={"btn btn-link"}
+          dataBsTarget={"#exampleModal2"}
+          dataBsToggle={"modal"}
+          handleModalOpen={handleModalOpen}
+          handleEliminarSinAsignarClick={handleEliminarSinAsignarClick}
+          handleEliminarAsignadoClick={handleEliminarAsignadoClick}
+          AddIcon={<i className="bi bi-app-indicator"></i>}
+          DeleteIcon={<i className="bi bi-trash"></i>}
+          emergenciasSinAsignar={emergenciasSinAsignar}
+          emergenciasAsignadas={emergenciasAsignadas}
+          columnas={["ID", "Emergencia", "Heroes", "Acciones"]}
+        />
+
       </div>
 
       <div className="modal fade" id="exampleModal2" aria-labelledby="exampleModalLabel" aria-hidden="true">
