@@ -11,10 +11,6 @@ import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import axios from "axios";
 import md5 from "md5";
 
-const publickey = "d6717bcf70a8fd964311b88d3f0716d7";
-const privatekey = "f80c80812cd776c7558de9566f69fc1dbf83de33";
-const gateway = "http://gateway.marvel.com/v1/public/comics?";
-
 const initialEmergencies = [
   { id: 1, description: "Robo en Fake street 1234", hero: null },
   { id: 2, description: "Secuestro en edificio Empire States", hero: null },
@@ -27,8 +23,35 @@ const initialHeroes = [
 ];
 
 function Marvel() {
+  const publickey = "d6717bcf70a8fd964311b88d3f0716d7";
+  const privatekey = "f80c80812cd776c7558de9566f69fc1dbf83de33";
+  const gateway = "http://gateway.marvel.com/v1/public/comics?";
+
+  const timestamp = new Date().getTime();
+  const hash = md5(timestamp + PRIVATEKEY + PUBLICKEY);
+  const url = `${GATEWAY}ts=${timestamp}&apikey=${PUBLICKEY}&hash=${hash}`;
+  const [heroList, setHeroList] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(url);
+        const heroes = response.data.data.results.map((hero) => ({
+          name: hero.name,
+          status: true,
+        }));
+        setHeroList(heroes);
+      } catch (error) {
+        console.error("Error en la API: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const [emergencies, setEmergencies] = useState([]);
   const [heroes, setHeroes] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [selectedEmergency, setSelectedEmergency] = useState(null);
   const [selectedHeroId, setSelectedHeroId] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -107,7 +130,6 @@ function Marvel() {
         </EmergencyGrid>
       </EmergencyPaper>
 
-      {/* Modal para seleccionar el superhéroe */}
       <Modal
         open={isModalOpen}
         onClose={handleModalClose}
