@@ -57,7 +57,7 @@ const BasicModal = () => {
           </Box>
         </Modal>
         {textos1.map((item, position)=> (
-          <Button onClick={()=>handleButtonClick(item.text, item.buttonName)}>Boton {item.buttonName}</Button>
+          <Button onClick={()=>handleButtonClick(item.text, item.buttonName)}>{item.buttonName}</Button>
         ))}
 
         <Button onClick={()=>handleButtonClick("Soy el boton 1")}>Boton 1</Button>

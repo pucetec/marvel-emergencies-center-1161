@@ -1,97 +1,71 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
-import PersonIcon from '@mui/icons-material/Person';
-import AddIcon from '@mui/icons-material/Add';
 import Typography from '@mui/material/Typography';
-import { blue } from '@mui/material/colors';
-import IconButton from '@mui/material/IconButton';
-import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
+import Modal from '@mui/material/Modal';
+import TableEdit from '../Table/Table';
+import NormalButton from '../Button/NormalButton';
+import AddButton from '../Button/AddButton';
 
-const heroes = ["Spider_man", "Iron_man"];
-
-function SimpleDialog(props) {
-  const { onClose, selectedValue, open } = props;
-
-  const handleClose = () => {
-    onClose(selectedValue);
-  };
-
-  const handleListItemClick = (value) => {
-    onClose(value);
-  };
-
-  return (
-    <Dialog onClose={handleClose} open={open}>
-      <DialogTitle>Set backup account</DialogTitle>
-      <List sx={{ pt: 0 }}>
-        {heroes.map((heroe) => (
-          <ListItem disableGutters key={heroe}>
-            <ListItemButton onClick={() => handleListItemClick(heroe)}>
-              <ListItemAvatar>
-                <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
-                  <PersonIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={heroe} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-        <ListItem disableGutters>
-          <ListItemButton
-            autoFocus
-            onClick={() => handleListItemClick('addAccount')}
-          >
-            <ListItemAvatar>
-              <Avatar>
-                <AddIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Add Hero" />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Dialog>
-  );
-}
-
-SimpleDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  selectedValue: PropTypes.string.isRequired,
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
 };
 
-export default function FloatButton() {
-  const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(heroes[1]);
+const FloatButton = ({tittle}) => {
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const heroes = ["Goku","Spidey","Batman"];
+  const textos1 = [{text:"Soy el boton 1", buttonName:"Boton 1"},
+                    {text:"Soy el boton 2", buttonName:"Boton 2"},
+                    {text:"Soy el boton 3", buttonName:"Boton 3"}];
 
-  const handleClose = (value) => {
-    setOpen(false);
-    setSelectedValue(value);
-  };
+    const [isOpen, setIsOpen] = useState(false);
+    const [modalText, setModalText] = useState("");
+    const [modalRespon, setModalRespon] = useState("");
 
-  return (
-    <div style={{ display: 'inline-block', marginRight: '5px' }}>
-      <IconButton onClick={handleClickOpen}>
-        <AddCircleTwoToneIcon fontSize='small'/>
-      </IconButton>
-      <SimpleDialog
-        selectedValue={selectedValue}
-        open={open}
-        onClose={handleClose}
-      />
-    </div>
-  );
-}
+    const handleOpen = () => setIsOpen(true);
+    const handleClose = () => setIsOpen(false);
+
+    const handleButtonClick = (text, buttonName) => {
+      setIsOpen(true);
+      setModalText(text);
+      const MyRequest = "Diste Click al boton: " + buttonName;
+      setModalRespon(MyRequest);
+    }
+  
+    return (
+      <div style={{ display: 'inline-block', marginRight: '5px' }}>
+        <AddButton onClick={handleOpen}></AddButton>
+        <Modal
+          open={isOpen}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              {tittle}
+            </Typography>
+            <TableEdit headers={["#","Hero","Asignar"]} bodyRows={heroes.map((item, position) => [
+        position + 1,
+        item,
+        <NormalButton text={"Asirgnar"} variant={"contained"}/>,
+      ])}></TableEdit>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              {modalText}
+            </Typography>
+            <Button onClick={handleClose}>Cerrar</Button>
+          </Box>
+        </Modal>
+      </div>
+    );
+  }
+
+export default FloatButton;

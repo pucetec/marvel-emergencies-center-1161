@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
-const TextInput = ({text, onChange}) => {
+const TextInput = ({text, onChange, value}) => {
   return (
     <Box
       component="form"
@@ -12,7 +12,7 @@ const TextInput = ({text, onChange}) => {
       noValidate
       autoComplete="off"
     >
-      <TextField id="outlined-basic" label={text} variant="outlined" onChange={onChange} />
+      <TextField id="outlined-basic" label={text} variant="outlined" onChange={onChange} value={value}/>
     </Box>
   );
 }

@@ -29,7 +29,7 @@ const App = () => {
     const md5Key = md5(joinedKey);
 
     const response = await axios.get(
-      GATEWAY + PUBLIC_KEY + "&TS" + curretTimestamp + "&hash=" + md5Key,
+      `${GATEWAY}?ts=${curretTimestamp}&apikey=${PUBLIC_KEY}&hash=${md5Key}`,
       {
         headers: {
           Accept: "*/*",
@@ -49,7 +49,7 @@ const App = () => {
 
   
   const handleButtonClick = () => {
-    setEmergency((prevEmergency) => [...prevEmergency, addEmergency]);
+    setEmergency((prevEmergency) => [...prevEmergency, {name:addEmergency, id:emergency.length+1}]);
     setAddEmergency("");
   };
 
@@ -58,10 +58,10 @@ const App = () => {
       <Header onEmergencyChange={handleEmergencyChange} onButtonClick={handleButtonClick}></Header>
       <br></br>
       <TableEdit headers={["#", "Emergencia", "Acciones"]} bodyRows={emergency.map((item, position) => [
-        position + 1,
-        item,
+        item.id,
+        item.name,
         <div>
-        <FloatButton key={position}/>
+        <FloatButton tittle={"Asinacion de heroes"} key={position}/>
         <DeleteButton key={position}/>
         </div>
       ])}></TableEdit>
