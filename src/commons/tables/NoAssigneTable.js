@@ -1,22 +1,26 @@
 import React from "react";
 import ActionIconsEmergencyWithoutAssignment from "../../componentes/actionIcons/ActionIconsEmergencyWithoutAssignment";
+import { useEmergency } from "../../context/EmergencyContextManagement";
 
-const NoAssigneTable = ({ headers, bodyContent, onClick, open, onClick2, onClose }) => {
+const NoAssigneTable = () => {
+  const { unassignedEmergencyList  } = useEmergency();
+  const header=["#", "Emergencia", "Acciones"];
+
   return (
     <table>
       <thead>
         <tr>
-          {headers.map((rowTitle, rowIndex) => (
+          {header.map((rowTitle, rowIndex) => (
             <td key={rowIndex}>{rowTitle}</td>
           ))}
         </tr>
       </thead>
       <tbody>
-      {bodyContent.map((cellContent, index) => {
+      {unassignedEmergencyList.map((cellContent, index) => {
       return <tr key={index}>
               <td key={`${index}-cell1`}  scope="row">{index + 1}</td>
               <td key={`${index}-cell2`}>{cellContent.emergency}</td>
-              <td key={`${index}-cell3`}><ActionIconsEmergencyWithoutAssignment onClick={onClick} index={index} open={open} onClick2={onClick2} onClose={onClose} /></td>
+              <td key={`${index}-cell3`}><ActionIconsEmergencyWithoutAssignment index={index} /></td>
             </tr> 
 })
 }

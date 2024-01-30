@@ -1,30 +1,32 @@
 import React from "react";
 import ActionIconsAssignateEmergency from "../../componentes/actionIcons/ActionIconAssignatedEmergency";
+import { useEmergency } from "../../context/EmergencyContextManagement";
 
-const AssignedTable = ({ headers, bodyContent, onClick, open, onClick2, onClose }) => {
+const AssignedTable = () => {
+  const { assignedList  } = useEmergency();
+  const headerAssignedEmergency=["#", "Emergencia", "Héroe", "Acciones"];
   return (
     <table>
       <thead>
         <tr>
-          {headers.map((rowTitle, rowIndex) => (
+          {headerAssignedEmergency.map((rowTitle, rowIndex) => (
             <td key={rowIndex}>{rowTitle}</td>
           ))}
         </tr>
       </thead>
       <tbody>
-      {bodyContent.map((cellContent, index) => {
-      return <tr key={index}>
-              <td key={`${index}-cell1`}  scope="row">{index + 1}</td>
-              <td key={`${index}-cell2`}>{cellContent.emergency}</td>
-              <td key={`${index}-cell2`}>{cellContent.nombre}</td>
-              <td key={`${index}-cell3`}><ActionIconsAssignateEmergency onClick={onClick} index={index} open={open} onClick2={onClick2} onClose={onClose} /></td>
-            </tr> 
-})
-}
-        
+      {assignedList.map((cellContent, index) => {
+        return <tr key={index}>
+                <td key={`${index}-cell1`}  scope="row">{index + 1}</td>
+                <td key={`${index}-cell2`}>{cellContent.emergency}</td>
+                <td key={`${index}-cell3`}>{cellContent.heroe}</td>
+                <td key={`${index}-cell4`}><ActionIconsAssignateEmergency index={index} /></td>
+              </tr> 
+        })
+      }  
       </tbody>
-    </table>
-  );
+    </table>  
+  ); 
 };
 
 export default AssignedTable;

@@ -1,15 +1,17 @@
 import React from "react";
 import Typography from "../../commons/typography/Typography";
 import AssignedTable from "../../commons/tables/AssignedTable";
+import { useEmergency } from "../../context/EmergencyContextManagement";
 
-const AsignatedEmergency = ({ headers, bodyContent }) => {
+const AsignatedEmergency = () => {
+  const { selectedHeroe } = useEmergency();
+  console.log(selectedHeroe)
   return (
     <div>
       <Typography level={"h2"} text={"Emergencias Asignadas"} />
-      <AssignedTable 
-        headers={["#", "Emergencia", "Héroe", "Acciones"]}
-        bodyContent={[{emergency: "Robo en Central Park", nombre: "Thor"}]}
-      />
+      <AssignedTable />
+     
+      {selectedHeroe}
     </div>
   );
 };

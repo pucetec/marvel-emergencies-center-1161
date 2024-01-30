@@ -1,22 +1,27 @@
 import React from "react";
 import ButtonMaterial from "../button/ButtonMaterial"; 
+import { useState } from "react";
+import { useEmergency } from "../../context/EmergencyContextManagement";
 
-const ModalTable = ({ headers, bodyContent, text, onClick }) => {
+const ModalTable = () => {
+  const { heroeList, handleSelectHeroe } = useEmergency();
+  const headerModalTable=["#", "Nombre", "Asignar"];
+  
   return (
     <table>
       <thead>
         <tr>
-          {headers.map((rowTitle, rowIndex) => (
+          {headerModalTable.map((rowTitle, rowIndex) => (
             <td key={rowIndex}>{rowTitle}</td>
           ))}
         </tr>
       </thead>
       <tbody>
-      {bodyContent.map((cellContent, index) => {
-      return <tr key={index}>
-              <td key={`${index}-cell1`}  scope="row">{index + 1}</td>
-              <td key={`${index}-cell2`}>{cellContent.nombre}</td>
-              <td key={`${index}-cell3`}><ButtonMaterial text={"Asignar"} /></td>
+      {heroeList.map((cellContent, indexModal) => {
+      return <tr key={indexModal}>
+              <td key={`${indexModal}-modalCell1`}  scope="row">{indexModal + 1}</td>
+              <td key={`${indexModal}-modalCell2`}>{cellContent.heroe}</td>
+              <td key={`${indexModal}-modalCell3`}><ButtonMaterial text={"Asignar"} onClick={() => handleSelectHeroe(cellContent.heroe)} /></td>
             </tr> 
 })
 }
