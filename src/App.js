@@ -18,6 +18,7 @@ function App() {
   const [emergenciasSinAsignar, setEmergenciasSinAsignar] = useState([]);
   const [heroes, setHeroes] = useState([]);
   const [emergenciasAsignadas, setEmergenciasAsignadas] = useState([]);
+  const [selectedHero, setSelectedHero] = useState("");
 
   const [show, setShow] = useState(false);
 
@@ -33,8 +34,38 @@ function App() {
     }
   };
 
+  const handleInsertarClick2 = () => {
+    if (selectedHero !== "" && emergenciasSinAsignar.length > 0) {
+      const emergenciaSeleccionada = emergenciasSinAsignar[0];
+
+      setEmergenciasAsignadas((prevlist) => {
+        return [
+          ...prevlist,
+          { descripcion: emergenciaSeleccionada.descripcion, heroe: selectedHero }
+        ];
+      });
+
+      setEmergenciasSinAsignar((prevlist) => {
+        return prevlist.slice(1);  // Remover la primera emergencia
+      });
+
+      setEmergencia("");  // Limpiar el campo de emergencia
+      setSelectedHero("");  // Limpiar la selección de héroe
+      handleClose();  // Cerrar el modal
+    }
+  };
+
+
   const onDeleteClick = (index) => {
     setEmergenciasSinAsignar((prevlist) => {
+      const updatedList = [...prevlist];
+      updatedList.splice(index, 1); // Eliminar la fila en el índice especificado
+      return updatedList;
+    });
+  };
+
+  const onDeleteClick2 = (index) => {
+    setEmergenciasAsignadas((prevlist) => {
       const updatedList = [...prevlist];
       updatedList.splice(index, 1); // Eliminar la fila en el índice especificado
       return updatedList;
@@ -49,12 +80,12 @@ function App() {
 
       const response = await axios.get(
         GATEWAY +
-          "ts=" +
-          timeStamp +
-          "&apikey=" +
-          PUBLIC_KEY +
-          "&hash=" +
-          md5Key
+        "ts=" +
+        timeStamp +
+        "&apikey=" +
+        PUBLIC_KEY +
+        "&hash=" +
+        md5Key
       );
       console.log({ response: response });
       setHeroes(response.data.data.results);
@@ -94,10 +125,9 @@ function App() {
             acciones: (
               <div>
                 <>
-                  <Button variant="primary" onClick={handleShow}>
+                  <Button variant="primary" onClick={() => { handleShow() }}>
                     <PersonIcon />
                   </Button>
-
                   <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
                       <Modal.Title>Selecciona tu superheroe</Modal.Title>
@@ -108,19 +138,15 @@ function App() {
                         bodies={heroes.map((hero, index) => ({
                           id: index + 1,
                           heroe: hero.name,
-                          acciones: "ingresar",
+                          acciones: (
+                            <Button onClick={() => { setSelectedHero(hero.name); handleInsertarClick2(); }}>
+                              Asignar
+                            </Button>
+                          ),
                         }))}
                         keys={["id", "heroe", "acciones"]}
                       />
                     </Modal.Body>
-                    <Modal.Footer>
-                      <Button variant="secondary" onClick={handleClose}>
-                        Close
-                      </Button>
-                      <Button variant="primary" onClick={handleClose}>
-                        Save Changes
-                      </Button>
-                    </Modal.Footer>
                   </Modal>
                 </>
                 <Button variant="danger" onClick={() => onDeleteClick(index)}>
@@ -139,21 +165,21 @@ function App() {
       <Row>
         <Table1
           headers={["#", "Emergencia", "Heroe", "Acciones"]}
-          bodies={[
-            {
-              id: "1",
-              descripcion: "Robo en Central Park",
-              superheroe: "Thor",
-              accion: "Eliminar",
-            },
-            {
-              id: "1",
-              descripcion: "Robo en Central Park",
-              superheroe: "Thor",
-              accion: "Eliminar",
-            },
-          ]}
-          keys={["id", "descripcion", "superheroe", "accion"]}
+          bodies={emergenciasAsignadas.map((row, index) => ({
+            ...row,
+            id: index + 1,
+            accion: (
+              <div>
+                <Button variant="danger" onClick={() => onDeleteClick2(index)}>
+                  <DeleteIcon />
+                </Button>
+                <Button variant="primary" onClick={() => { setSelectedHero(row.heroe); handleShow(); }}>
+                  <PersonIcon />
+                </Button>
+              </div>
+            ),
+          }))}
+          keys={["id", "descripcion", "heroe", "accion"]}
         />
       </Row>
     </Container>
