@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import EmergencyTitle from "./components/EmergencyTitle";
+import EmergencyForm from "./components/EmergencyForm";
+import EmergencyTable from "./common/table/EmergencyTable";
+import { bringMarvelInfo } from "./services/marvelService";
 
-function App() {
+const App = () => {
+  const [emergencies, setEmergencies] = useState([]);
+
+  const handleAddEmergency = (newEmergency) => {
+    setEmergencies([...emergencies, newEmergency]);
+    // Enviar la emergencia a la API.
+  };
+
+  const handleDeleteEmergency = (emergencyToDelete) => {
+    console.log("Eliminar emergencia:", emergencyToDelete);
+    setEmergencies(
+      emergencies.filter((emergency) => emergency !== emergencyToDelete)
+    );
+  };
+
+  // Llama a bringMarvelInfo si es necesario
+  bringMarvelInfo();
+
+  const tableHeaders = ["#", "Emergencia", "Acciones"];
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <EmergencyTitle />
+      <EmergencyForm onAddEmergency={handleAddEmergency} />
+      <EmergencyTable
+        headers={tableHeaders}
+        emergencies={emergencies}
+        onDeleteEmergency={handleDeleteEmergency}
+      />
     </div>
   );
-}
+};
 
 export default App;
