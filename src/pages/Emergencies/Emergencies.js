@@ -1,12 +1,16 @@
+import MatButton from "../../common/MatButton/MatButton";
 import MatModal from "../../common/MatModal/MatModal";
 import MatTypography from "../../common/MatTypography/MatTypography";
 import AssignedEmergencies from "../../components/AssignedEmergencies/AssignedEmergencies";
 import HeaderBar from "../../components/HeaderBar/HeaderBar";
 import UnassignedEmergencies from "../../components/UnassignedEmergencies/UnassignedEmergencies";
+import { useAuth } from "../../contexts/AuthContext/AuthContext";
 import { EmergencyManagementContextProvider } from "../../contexts/EmergencyManagementContext/EmergencyManagementContext";
 import "./Emergencies.css";
 import Divider from "@mui/material/Divider";
 const Emergencies = () => {
+  const { signOutUser } = useAuth();
+
   return (
     <EmergencyManagementContextProvider>
       <div className="Emergencies">
@@ -35,7 +39,9 @@ const Emergencies = () => {
         <MatTypography text="Emergencias Asignadas" variant="h4" />
         <AssignedEmergencies />
         <MatModal />
+        <MatButton text="Sign Out" variant="contained" onClick={signOutUser} />
       </div>
+      
     </EmergencyManagementContextProvider>
   );
 }

@@ -10,11 +10,18 @@ import {
 } from "@mui/material";
 import { useAuth } from "../../contexts/AuthContext/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 
 const Login = () => {
-  const { signInWithEmailAndPasswordHandler, currentUser, signInWithGoogle } = useAuth();
+  const { signInWithEmailAndPasswordHandler, currentUser, signInWithGoogle, createUserWithEmailAndPasswordHandler} = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSignIn, setIsSignIn] = useState(true);
+
+  const handleChipClick = (isSignIn) => {
+    setIsSignIn(isSignIn);
+  };
   const navigate = useNavigate();
 
   const paperStyle = {
@@ -36,14 +43,29 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    signInWithEmailAndPasswordHandler(email, password);
+    if (isSignIn) {
+      try {
+        await signInWithEmailAndPasswordHandler(email, password);
+      } catch (error) {
+        alert(error);
+      }
+    }
+
+    if (!isSignIn) {
+      try {
+        await createUserWithEmailAndPasswordHandler(email, password);
+      } catch (error) {
+        alert(error);
+      }
+    }
+    
   };
 
   const googleLoginStart = async() =>{
     try {
       await signInWithGoogle();
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   }
 
@@ -55,9 +77,9 @@ const Login = () => {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Paper elevation={3} style={paperStyle}>
-        <Typography variant="h5">Login</Typography>
-        <form style={formStyle} onSubmit={handleLogin}>
+      <Paper elevation={3} style={{ padding: 20, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Typography variant="h5">{isSignIn ? 'Sign In' : 'Sign Up'}</Typography>
+        <form style={{ width: '100%', marginTop: 1 }} onSubmit={handleLogin}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -82,10 +104,9 @@ const Login = () => {
             fullWidth
             variant="contained"
             color="primary"
-            style={submitStyle}
-            href="/emergencies"
+            style={{ marginTop: 20 }}
           >
-            Sign In
+            {isSignIn ? 'Sign In' : 'Sign Up'}
           </Button>
         </form>
         <Grid container justifyContent="flex-end">
@@ -95,7 +116,19 @@ const Login = () => {
             </Link>
           </Grid>
         </Grid>
-        <Button variant="contained" onClick={googleLoginStart}>
+        <Stack direction="row" spacing={1} style={{ marginTop: 20 }}>
+          <Chip
+            label="Sign In"
+            onClick={() => handleChipClick(true)}
+            color={isSignIn ? 'primary' : 'default'}
+          />
+          <Chip
+            label="Sign Up"
+            onClick={() => handleChipClick(false)}
+            color={isSignIn ? 'default' : 'primary'}
+          />
+        </Stack>
+        <Button variant="contained" onClick={googleLoginStart} style={{ marginTop: 10 }}>
           Log in with Google
         </Button>
       </Paper>
