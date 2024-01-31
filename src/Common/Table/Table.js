@@ -15,7 +15,7 @@ const Table = ({
   columnas,
 }) => {
   return (
-    <table className="table">
+    <table className="table table-bordered">
       <thead>
         <tr>
           {columnas.map((titulo, index) => (
@@ -58,6 +58,15 @@ const Table = ({
                 <td>{emergencia.nombre}</td>
                 <td>{emergencia.heroe}</td>
                 <td>
+
+                  <Button
+                    className={className}
+                    dataBsTarget={dataBsTarget}
+                    dataBsToggle={dataBsToggle}
+                    onClick={() => handleModalOpen(emergencia)}
+                    text={AddIcon}
+                  />
+
                   <Button
                     className={"btn btn-link"}
                     onClick={() => handleEliminarAsignadoClick(emergencia)}

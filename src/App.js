@@ -5,10 +5,13 @@ import axios from 'axios';
 // Components
 import Button from "./Components/Button/Button";
 import Input from "./Components/Input/Input";
+
+// Common
 import Table from "./Common/Table/Table";
+import TableHeroes from "./Common/TableHeroes/TableHeroes";
+
 
 function App() {
-
 
   const PUBLIC_KEY = "758b39b923384db09734503e705b0481";
   const PRIVATE_KEY = "064eeabf0a9554f2bf531ff4af173aadc955957b";
@@ -43,6 +46,7 @@ function App() {
   const [selectedUser, setSelectedUser] = useState(null); // Nuevo estado para almacenar el usuario seleccionado
   const [emergenciasSinAsignar, setEmergenciasSinAsignar] = useState([]);
   const [emergenciasAsignadas, setEmergenciasAsignadas] = useState([]);
+  const [selectedEmergencia, setSelectedEmergencia] = useState(null);
 
   const handleInputChange = (e) => {
     setEmergencia(e.target.value);
@@ -60,38 +64,59 @@ function App() {
     setEmergencia("");
   };
 
-  const handleModalOpen = (user) => {
-    setSelectedUser(user); // Al abrir el modal, guarda el usuario seleccionado
+  const handleModalOpen = (emergencia) => {
+    if (emergencia.heroe) {
+      // Si la emergencia tiene un héroe asignado, es una reasignación
+      setSelectedEmergencia(emergencia);
+    } else {
+      // Si no tiene héroe asignado, es una nueva asignación
+      setSelectedUser(emergencia);
+    }
   };
 
   const handleHeroAsignarClick = (hero) => {
-    if (selectedUser) {
-      // Verifica que el héroe tenga un nombre antes de asignarlo
+    if (selectedUser || selectedEmergencia) {
       const heroeAsignado = hero.name;
-
-      // Recorre la lista de héroes
       const updatedHeroList = heroList.map((h) => {
-        // Verifica si el nombre del héroe coincide con el héroe asignado
         if (h.name === heroeAsignado) {
-          // Al asignar un héroe, cambia el estado (status) a false
           return { ...h, status: false };
+        } else if (selectedEmergencia && h.name === selectedEmergencia.heroe) {
+          // Si hay una emergencia seleccionada, y el héroe coincide con el héroe de la emergencia,
+          // cambia el estado del héroe a true ya que se está reasignando
+          return { ...h, status: true };
         } else {
           return h;
         }
       });
-
-      // Al asignar un héroe, agrega el usuario y el héroe asignado a la segunda tabla
-      const emergenciaAsignada = {
-        ...selectedUser,
-        heroe: heroeAsignado,
-      };
-
-      setEmergenciasAsignadas([...emergenciasAsignadas, emergenciaAsignada]);
-      setEmergenciasSinAsignar(emergenciasSinAsignar.filter((e) => e.id !== selectedUser.id));
-      setSelectedUser(null);
-      setHeroList(updatedHeroList); // Actualiza la lista de héroes con el estado cambiado
+  
+      if (selectedEmergencia) {
+        const updatedEmergenciaAsignada = {
+          ...selectedEmergencia,
+          heroe: heroeAsignado,
+        };
+  
+        setEmergenciasAsignadas(
+          emergenciasAsignadas.map((e) =>
+            e.id === selectedEmergencia.id ? updatedEmergenciaAsignada : e
+          )
+        );
+  
+        setSelectedEmergencia(null);
+      } else {
+        const emergenciaAsignada = {
+          ...selectedUser,
+          heroe: heroeAsignado,
+        };
+  
+        setEmergenciasAsignadas([...emergenciasAsignadas, emergenciaAsignada]);
+        setEmergenciasSinAsignar(emergenciasSinAsignar.filter((e) => e.id !== selectedUser.id));
+        setSelectedUser(null);
+      }
+  
+      setHeroList(updatedHeroList);
     }
   };
+  
 
   const handleEliminarAsignadoClick = (emergencia) => {
     // Cambiar el estado del héroe a true en la lista de héroes
@@ -121,21 +146,21 @@ function App() {
   return (
     <div className="App container">
 
-      <h1 className="my-5">
+      <h1 className="my-5 text-center">
         Central de Emergencias
       </h1>
 
-      <div className="d-inline-flex gap-4 align-items-center my-5">
-        <h5 className="m-0">Emergencia</h5>
+      <div className="d-inline-flex gap-4 align-items-center justify-content-center w-100 my-5">
+        <h5 className="my-0">Emergencia</h5>
 
-          <Input 
-            className={"text"}
-            id={"floatingInput"}
-            onChange={handleInputChange}
-            placeholder={"Ingrese emergencia"}
-            type={"text"}
-            value={emergencia}
-          />
+        <Input 
+          className={"text"}
+          id={"floatingInput"}
+          onChange={handleInputChange}
+          placeholder={"Ingrese emergencia"}
+          type={"text"}
+          value={emergencia}
+        />
 
         <div>
 
@@ -190,32 +215,14 @@ function App() {
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+              <h1 className="modal-title fs-5" id="exampleModalLabel">Lista de heroes</h1>
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div className="modal-body">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Asignar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {heroList.map((hero, index) => (
-                    <tr key={index}>
-                      <th scope="row">{index + 1}</th>
-                      <td>{hero.name}</td>
-                      <td>
-                        <button className={hero.status ? "btn btn-primary" : "btn btn-primary disabled"} onClick={() => handleHeroAsignarClick(hero)} data-bs-dismiss="modal">
-                          {hero.status ? "Asignar" : "Asignado"}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <TableHeroes
+                heroList={heroList}
+                handleHeroAsignarClick={handleHeroAsignarClick}
+              />
             </div>
           </div>
         </div>
