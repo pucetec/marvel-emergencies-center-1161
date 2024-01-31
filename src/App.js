@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 
 function App() {
-  const [emergencias, setEmergencia] = useState([
+  const [emergencias, setEmergencias] = useState([
     {
       id: 1,
       emergencia: "Robo",
@@ -19,7 +19,14 @@ function App() {
     },
   ]);
 
-  const [emergenciasAsignada, setEmergenciasAsignada] = useState([
+  const [nuevaEmergencia, setNuevaEmergencia] = useState("");
+  const handleButtonClick = () => {
+    setEmergencias((prevEmergencia) => {
+      return [...prevEmergencia, { id: 3, emergencia: nuevaEmergencia }];
+    });
+  };
+
+  const [emergenciasAsignadas, setEmergenciasAsignadas] = useState([
     {
       id: 1,
       emergenciaAsignada: "Robo",
@@ -65,7 +72,7 @@ function App() {
       <br />
       <br />
       <div
-        style={{ display: "flex", alignItems: "center", marginLeft: "420px" }}
+        style={{ display: "flex", alignItems: "center", marginLeft: "560px" }}
       >
         <h2>Emergencia</h2>
         <input
@@ -75,6 +82,7 @@ function App() {
             height: "29px",
             borderRadius: "7PX",
           }}
+          onChange={(event) => setNuevaEmergencia(event.target.value)}
         />
         <button
           style={{
@@ -86,6 +94,7 @@ function App() {
             borderRadius: "7px",
             color: "white",
           }}
+          onClick={handleButtonClick}
         >
           Ingresar
         </button>
@@ -131,7 +140,7 @@ function App() {
             <th>Heroe</th>
             <th>Acciones</th>
           </tr>
-          {emergenciasAsignada.map((emergencia) => (
+          {emergenciasAsignadas.map((emergencia) => (
             <tr>
               <td>{emergencia.id}</td>
               <td>{emergencia.emergenciaAsignada}</td>
@@ -149,7 +158,6 @@ function App() {
         </table>
       </div>
       <div>
-        <Button onClick={handleOpen}>Open modal</Button>
         <Modal
           open={open}
           onClose={handleClose}
