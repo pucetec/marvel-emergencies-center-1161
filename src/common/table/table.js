@@ -1,7 +1,7 @@
 
-const Table=({headers,bodyRows})=>{
+const Table=({headers,bodyRows,cellSpacing})=>{
     return(
-        <table>
+        <table cellSpacing={cellSpacing}>
             <thead>
             <tr>
                 {headers.map((element)=>(

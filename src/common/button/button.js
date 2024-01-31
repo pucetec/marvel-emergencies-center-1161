@@ -1,8 +1,8 @@
 import { Button, ButtonGroup } from '@chakra-ui/react'
 
-const InsertButton =()=>{
+const InsertButton =(onClick)=>{
     return (
-        <Button colorScheme='blue' size='sm' onClick={()=>alert('click')}>Insertar </Button>
+        <Button colorScheme='blue' size='sm' onClick={(onClick)}>Insertar </Button>
     );
 };
 export default InsertButton;
