@@ -11,11 +11,13 @@ import {
 import SquareWithDotIcon from "@mui/icons-material/RadioButtonUnchecked";
 import TrashCanIcon from "@mui/icons-material/Delete";
 
-const EmergencyList = () => {
+const EmergencyList = ({ onAssignButtonClick }) => {
   const { emergencies, heroes, assignHeroToEmergency } = useEmergencyContext();
   const [selectedHeroId, setSelectedHeroId] = useState("");
 
   const handleAssignHero = (emergencyId) => {
+    onAssignButtonClick();
+
     if (selectedHeroId) {
       assignHeroToEmergency(emergencyId, selectedHeroId);
       setSelectedHeroId("");

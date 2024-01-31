@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { EmergencyContext } from "./EmergencyContext";
+import { EmergencyContextProvider } from './EmergencyContext';
 import EmergencyInput from "./EmergencyInput";
 import EmergencyList from "./EmergencyList";
 import EmergencyPaper from "./Components/EmergencyPaper";
@@ -11,57 +12,35 @@ import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import axios from "axios";
 import md5 from "md5";
 
-const initialEmergencies = [
-  { id: 1, description: "Robo en Fake street 1234", hero: null },
-  { id: 2, description: "Secuestro en edificio Empire States", hero: null },
-];
-
-const initialHeroes = [
-  { id: 1, name: "Spiderman" },
-  { id: 2, name: "Iron Man" },
-  { id: 3, name: "Thor" },
-];
-
 function Marvel() {
-  const publickey = "d6717bcf70a8fd964311b88d3f0716d7";
-  const privatekey = "f80c80812cd776c7558de9566f69fc1dbf83de33";
-  const gateway = "http://gateway.marvel.com/v1/public/comics?";
+  const PUBLICKEY = "d6717bcf70a8fd964311b88d3f0716d7";
+  const PRIVATEKEY = "f80c80812cd776c7558de9566f69fc1dbf83de33";
+  const gateway = "http://gateway.marvel.com/v1/public/characters";
 
-  const timestamp = new Date().getTime();
-  const hash = md5(timestamp + PRIVATEKEY + PUBLICKEY);
-  const url = `${GATEWAY}ts=${timestamp}&apikey=${PUBLICKEY}&hash=${hash}`;
-  const [heroList, setHeroList] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(url);
-        const heroes = response.data.data.results.map((hero) => ({
-          name: hero.name,
-          status: true,
-        }));
-        setHeroList(heroes);
-      } catch (error) {
-        console.error("Error en la API: ", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
+  //const [heroList, setHeroList] = useState([]);
   const [emergencies, setEmergencies] = useState([]);
   const [heroes, setHeroes] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
+  //const [selectedUser, setSelectedUser] = useState(null);
   const [selectedEmergency, setSelectedEmergency] = useState(null);
   const [selectedHeroId, setSelectedHeroId] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const YourApp = () => {
+    return (
+      <EmergencyContextProvider>
+        {/* Your components go here */}
+      </EmergencyContextProvider>
+    );
+  };
+  
+  export default YourApp;
+
   useEffect(() => {
     const fetchDataFromMarvel = async () => {
       const ts = new Date().getTime().toString();
-      const hash = md5(`${ts}${privatekey}${publickey}`);
+      const hash = md5(`${ts}${PRIVATEKEY}${PUBLICKEY}`);
 
-      const marvelURL = `${gateway}?ts=${ts}&apikey=${publickey}&hash=${hash}`;
+      const marvelURL = `${gateway}?ts=${ts}&apikey=${PUBLICKEY}&hash=${hash}`;
 
       try {
         const response = await axios.get(marvelURL);
@@ -87,7 +66,6 @@ function Marvel() {
     setSelectedEmergency(emergency);
     setIsModalOpen(true);
   };
-
   const handleModalClose = () => {
     setIsModalOpen(false);
     setSelectedHeroId("");
@@ -103,20 +81,16 @@ function Marvel() {
   };
 
   const handleAssignHero = () => {
-    assignHeroToEmergency(selectedEmergency.id, selectedHeroId);
-    handleModalClose();
+    if (selectedEmergency) {
+      assignHeroToEmergency(selectedEmergency.id, selectedHeroId);
+      handleModalClose();
+    } else {
+      console.error("selectedEmergency is undefined");
+    }
   };
 
   return (
-    <EmergencyContext.Provider
-      value={{
-        emergencies,
-        heroes,
-        addEmergency,
-        assignHeroToEmergency,
-        setHeroes,
-      }}
-    >
+    <EmergencyContext.Provider>
       <EmergencyPaper
         elevation={3}
         style={{ padding: "20px", width: "80%", margin: "auto" }}
@@ -135,6 +109,7 @@ function Marvel() {
         onClose={handleModalClose}
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
+        style={{ padding: "20px", width: "80%", margin: "auto" }}
       >
         <div>
           <FormControl fullWidth>
