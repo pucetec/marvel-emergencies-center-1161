@@ -8,36 +8,24 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 
 function App() {
-  const [emergencias, setEmergencias] = useState([
-    {
-      id: 1,
-      emergencia: "Robo",
-    },
-    {
-      id: 2,
-      emergencia: "Atraco a Union Depository Bank",
-    },
-  ]);
-
+  // EMERGENCIAS SIN ASIGNAR ----------------------------------------------------
+  const [emergencias, setEmergencias] = useState([]);
+  // END EMERGENCIAS SIN ASIGNAR ----------------------------------------------------
   const [nuevaEmergencia, setNuevaEmergencia] = useState("");
+  const [contadorId, setContadorId] = useState(1);
   const handleButtonClick = () => {
     setEmergencias((prevEmergencia) => {
-      return [...prevEmergencia, { id: 3, emergencia: nuevaEmergencia }];
+      const nuevaEmergenciaConId = {
+        id: contadorId,
+        emergencia: nuevaEmergencia,
+      };
+      setContadorId(contadorId + 1);
+      if (eliminarEmergenciaAsignada == true) {
+        setContadorId(contadorId - 1);
+      }
+      return [...prevEmergencia, nuevaEmergenciaConId];
     });
   };
-
-  const [emergenciasAsignadas, setEmergenciasAsignadas] = useState([
-    {
-      id: 1,
-      emergenciaAsignada: "Robo",
-      heroe: "Thor",
-    },
-    {
-      id: 2,
-      emergenciaAsignada: "Atraco a Union Depository Bank",
-      heroe: "Spider Man",
-    },
-  ]);
 
   const [heroes, setHeroes] = useState([
     {
@@ -48,7 +36,46 @@ function App() {
       id: 2,
       nombre: "Thor",
     },
+    {
+      id: 3,
+      nombre: "Iron Man",
+    },
   ]);
+
+  // EMERGENCIAS ASIGNADAS ----------------------------------------------------
+  const [emergenciasAsignadas, setEmergenciasAsignadas] = useState([]);
+  // END EMERGENCIAS ASIGNADAS ----------------------------------------------------
+  const [contadorIdEmergenciaAs, setContadorIdEmergenciaAs] = useState(1);
+  const asignarHeroe = (heroe) => {
+    const emergenciaSeleccionada = emergencias[emergencias.length - 1];
+    if (emergenciaSeleccionada && heroe) {
+      setEmergenciasAsignadas((prevEmergenciasAsignadas) => [
+        ...prevEmergenciasAsignadas,
+        {
+          id: contadorIdEmergenciaAs,
+          emergenciaAsignada: emergenciaSeleccionada.emergencia,
+          heroe: heroe.nombre,
+        },
+      ]);
+      setContadorIdEmergenciaAs(contadorIdEmergenciaAs + 1);
+      handleClose();
+    }
+  };
+  // Función para eliminar de Emergencias sin asignar
+  const eliminarEmergenciaSinAsignar = (id) => {
+    const nuevasEmergencias = emergencias.filter(
+      (emergencia) => emergencia.id !== id
+    );
+    setEmergencias(nuevasEmergencias);
+  };
+
+  // Función para eliminar de Emergencias Asignadas
+  const eliminarEmergenciaAsignada = (id) => {
+    const nuevasEmergenciasAsignadas = emergenciasAsignadas.filter(
+      (emergencia) => emergencia.id !== id
+    );
+    setEmergenciasAsignadas(nuevasEmergenciasAsignadas);
+  };
 
   const style = {
     position: "absolute",
@@ -72,7 +99,7 @@ function App() {
       <br />
       <br />
       <div
-        style={{ display: "flex", alignItems: "center", marginLeft: "560px" }}
+        style={{ display: "flex", alignItems: "center", marginLeft: "420px" }}
       >
         <h2>Emergencia</h2>
         <input
@@ -119,7 +146,9 @@ function App() {
                 <IconButton onClick={handleOpen}>
                   <AddIcon />
                 </IconButton>
-                <IconButton>
+                <IconButton
+                  onClick={() => eliminarEmergenciaSinAsignar(emergencia.id)}
+                >
                   <DeleteIcon />
                 </IconButton>
               </td>
@@ -146,7 +175,9 @@ function App() {
               <td>{emergencia.emergenciaAsignada}</td>
               <td>{emergencia.heroe}</td>
               <td>
-                <IconButton>
+                <IconButton
+                  onClick={() => eliminarEmergenciaAsignada(emergencia.id)}
+                >
                   <DeleteIcon />
                 </IconButton>
                 <IconButton onClick={handleOpen}>
@@ -193,6 +224,7 @@ function App() {
                         borderRadius: "7px",
                         color: "white",
                       }}
+                      onClick={() => asignarHeroe(heroe)}
                     >
                       Asignar
                     </button>
