@@ -5,13 +5,12 @@ const EmergencyContextManagement = createContext();
 export const EmergencyContextManagementProvider = ({ children }) => {
   const [newEmergencyName, setNewEmergencyName] = useState("");
   const [unassignedEmergencyList, setUnassignedEmergencyList] = useState([]);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [selectedEmergency, setSelectedEmergency] = useState("");
   const [heroeList, setHeroeList] = useState ([{heroe: "IronMan"}, {heroe: "Thor"}, {heroe: "Spiderman"}])
   const [assignedList, setAssignedList] = useState([]);
-//-----------------------------------------------------------------
   const [selectedHeroe, setSelectedHeroe] = useState("");
-  const [newAssignment, setNewAssigment] = useState({});
+  
 //------------------------------------------------------------------
   const style = {
     position: 'absolute',
@@ -42,33 +41,57 @@ export const EmergencyContextManagementProvider = ({ children }) => {
     setUnassignedEmergencyList(newUnassignedEmergencyList);
   };
 
+  const deleteAssignedEmergency = (position) => {
+    const newAssignedList = assignedList.filter((item, index) => index !== position);
+    setAssignedList(newAssignedList);
+  };
+
   const handleOpen = (position) => { 
     setOpen(true);
     setSelectedEmergency(unassignedEmergencyList[position].emergency);
     }
 
+  const handleOpenNewAssignation = (position) => { 
+    setOpen(true);
+    setSelectedEmergency(assignedList[position].emergency);
+    console.log("assignedList", ...assignedList)
+    const newAssignedList = [...assignedList];
+      newAssignedList[position] = { heroe: selectedHeroe };
+      setAssignedList(newAssignedList);
+      console.log("newAssignedList", ...newAssignedList)
+    }; 
+
+    
   const handleClose = () => setOpen(false);
 //-------------------------------------------------------------------------------
   const handleSelectHeroe = (heroe) => {
-    setSelectedHeroe(`${heroe}`) 
-      console.log("depuis handle select heroe : ",`${heroe}`);
-      console.log("heroe selcetionné : ", selectedHeroe);
-      
+    setSelectedHeroe(`${heroe}`)  
     }
 
-  const handleClickModal = () => {
-    console.log("depuis click modal", selectedHeroe)
-    setNewAssigment({
-      emergency: selectedEmergency,
-      heroe: selectedHeroe});
+    
+
+  useEffect((position) => {
+    console.log("Position : ", position)
+    if (selectedHeroe) {
       setAssignedList((previousAssignedList) => {
-        return [...previousAssignedList, newAssignment]
+        return [...previousAssignedList, {emergency: selectedEmergency, heroe: selectedHeroe}]
       }); 
     setOpen(false);
+    }
+  }, [selectedHeroe]);
+
+  const assignmentFonction = (position) => {
+    handleOpen(position)
+    deleteEmergency(position);
+
+  }
+
+  const handleClickModal = () => {
+    console.log("depuis click modal", selectedHeroe)  
   }
 
     return (
-        <EmergencyContextManagement.Provider value={{ newEmergencyName, setNewEmergencyName, unassignedEmergencyList, setUnassignedEmergencyList, handleNewEmergencyClick, deleteEmergency, handleOpen, handleClose, heroeList, handleClickModal, open, assignedList, style, handleSelectHeroe, setSelectedHeroe, selectedHeroe }} >
+        <EmergencyContextManagement.Provider value={{ newEmergencyName, setNewEmergencyName, unassignedEmergencyList, setUnassignedEmergencyList, handleNewEmergencyClick, deleteEmergency, handleOpen, handleClose, heroeList, handleClickModal, open, assignedList, style, handleSelectHeroe, setSelectedHeroe, selectedHeroe, assignmentFonction, deleteAssignedEmergency, handleOpenNewAssignation }} >
             {children}
         </EmergencyContextManagement.Provider>
     );
