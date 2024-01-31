@@ -1,9 +1,7 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
+import { Box, Button, Modal, Typography } from "@mui/material";
 import { useState } from "react";
+import CropFreeIcon from "@mui/icons-material/CropFree";
 
 const style = {
   position: "absolute",
@@ -17,29 +15,45 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal() {
-  const [isOpen, setisOpen] = useState(false);
-  const handleOpen = () => setisOpen(true);
-  const handleClose = () => setisOpen(false);
-
+export const AppModal = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [modalText, setModalText] = useState("");
+  const [modalResponse, setModalResponse] = useState("");
+  const handleButtonClick = (text, botonName) => {
+    setIsOpen(true);
+    setModalText(text);
+    const myButtonstring = "Diste click en botón: " + botonName;
+    setModalResponse(myButtonstring);
+  };
+  const textos = [];
   return (
     <div>
-      <Button onClick={handleOpen}>Open modal</Button>
+      <Button
+        variant="text"
+        startIcon={<CropFreeIcon />}
+        onClick={() => setIsOpen(true)}
+      ></Button>
       <Modal
         open={isOpen}
-        onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Escoge a tu Super Héroe
+            Text in a modal
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+            {modalText}
           </Typography>
+          <Button onClick={() => setIsOpen(false)}>close</Button>
         </Box>
       </Modal>
+      {textos.map((item, position) => (
+        <Button onClick={() => handleButtonClick(item.text, item.botonName)}>
+          {item.botonName}
+        </Button>
+      ))}
+      <div>{modalResponse}</div>
     </div>
   );
-}
+};

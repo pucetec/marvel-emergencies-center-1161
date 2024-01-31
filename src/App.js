@@ -2,34 +2,49 @@ import * as React from "react";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CropFreeIcon from "@mui/icons-material/CropFree";
-import Modal from ".//Modal/Modal.js";
-
-const Public_key = "162bf646746d2cfe7d66d6a27b6a90dc";
-const Private_key = "68979345d9ee3d74351b46edfdb64e657db8c73a";
-const Gateway = "http://gateway.marvel.com/v1/public/comics?ts=1&apikey=";
+import { AppModal } from "./Modal/Modal";
+import TextField from "@mui/material/TextField";
 
 const App = () => {
   const [emergencyText, setEmergencyText] = useState("");
+  const [emergencies, setEmergencies] = useState([]);
+  const [nextId, setNextId] = useState(1);
+
   const handleInputChange = (event) => {
     setEmergencyText(event.target.value);
   };
+
   const handleButtonClick = () => {
-    console.log("Valor del inBasicModalput:", emergencyText);
+    if (emergencyText.trim() !== "") {
+      const newEmergency = {
+        id: nextId,
+        text: emergencyText,
+      };
+      setEmergencies((prevEmergencies) => [...prevEmergencies, newEmergency]);
+      setNextId((prevId) => prevId + 1);
+      setEmergencyText("");
+    }
+  };
+
+  const handleDelete = (id) => {
+    setEmergencies((prevEmergencies) =>
+      prevEmergencies.filter((emergency) => emergency.id !== id)
+    );
   };
 
   return (
-    <div>
+    <>
       <h1 style={{ textAlign: "center" }}>Central de Emergencias</h1>
       <br />
       <div style={{ textAlign: "center" }}>
         <label>
-          Emergencia{" "}
-          <input
+          Emergencia
+          <TextField
+            label="Ingresa tu Emergencia"
             type="text"
             value={emergencyText}
             onChange={handleInputChange}
-          ></input>
+          />
         </label>
         <Button variant="contained" onClick={handleButtonClick}>
           Ingresar
@@ -37,26 +52,34 @@ const App = () => {
       </div>
       <br />
       <div>
-        <h2 style={{ textAlign: "center" }}>Emergencias sin signar</h2>
-        <table
-          style={{
-            margin: "auto",
-            textAlign: "center",
-            borderCollapse: "collapse",
-            width: "50%",
-          }}
-        >
-          <td>#</td>
-          <td>Emergencias</td>
-          <td>
-            Acciones
-            <div>
-              <Button variant="contained" startIcon={<DeleteIcon />}></Button>
-              <Button variant="text" startIcon={<CropFreeIcon />}></Button>
-              <Modal></Modal>
-            </div>
-          </td>
-        </table>
+        <h2 style={{ textAlign: "center" }}>Emergencias sin asignar</h2>
+        <div style={{ width: "50%", margin: "auto" }}>
+          <table>
+            <tr>
+              <th>#</th>
+              <th>Emergencias</th>
+              <th>Acciones</th>
+            </tr>
+
+            {emergencies.map((emergency) => (
+              <tr key={emergency.id}>
+                <td>{emergency.id}</td>
+                <td>{emergency.text}</td>
+                <td>
+                  <div style={{ display: "flex", textAlign: "center" }}>
+                    <Button
+                      variant="contained"
+                      startIcon={<DeleteIcon />}
+                      onClick={() => handleDelete(emergency.id)}
+                    />
+
+                    <AppModal />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </table>
+        </div>
       </div>
       <br />
       <div>
@@ -69,19 +92,10 @@ const App = () => {
             width: "50%",
           }}
         >
-          <td>#</td>
-          <td>Emergencias</td>
-          <td>Héroe</td>
-          <td>
-            Acciones
-            <div>
-              <Button variant="contained" startIcon={<DeleteIcon />}></Button>
-              <Button variant="text" startIcon={<CropFreeIcon />}></Button>
-            </div>
-          </td>
+          {}
         </table>
       </div>
-    </div>
+    </>
   );
 };
 
