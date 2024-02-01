@@ -1,5 +1,5 @@
-import { Heading } from '@chakra-ui/react'
-const TextTitle=()=>{
+import { Heading } from '@chakra-ui/react';
+const TitleEmerge=()=>{
     return(
         <div>
         <Heading>Central de emergencia</Heading>
@@ -7,4 +7,4 @@ const TextTitle=()=>{
         
     );
 }
-export default TextTitle;
+export default TitleEmerge;
