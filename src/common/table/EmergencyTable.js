@@ -14,43 +14,23 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  Checkbox,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
-import TableHeader from "./TableHeader";
-import TableRowComponent from "./TableRow";
-import axios from "axios";
+import { Button as MUIButton } from "@mui/material";
 
-const EmergencyTable = ({ headers, emergencies, onDeleteEmergency }) => {
+const EmergencyTable = ({
+  headers,
+  emergencies,
+  onDeleteEmergency,
+  onAssignEmergency,
+  marvelCharacters,
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEmergency, setSelectedEmergency] = useState(null);
-  const [marvelHeroes, setMarvelHeroes] = useState([]);
-  const [selectedHeroes, setSelectedHeroes] = useState([]);
-
-  useEffect(() => {
-    const fetchMarvelHeroes = async () => {
-      try {
-        // Reemplaza 'TU_PUBLIC_KEY' con tu clave pública de Marvel API
-        const publicKey = "b84229fc4ccb924a9974daa633543fcd";
-
-        const response = await axios.get(
-          "https://gateway.marvel.com/v1/public/characters",
-          {
-            params: {
-              apikey: publicKey,
-            },
-          }
-        );
-
-        // Extrae la lista de superhéroes de la respuesta de la API
-        const heroes = response.data?.data?.results || [];
-        setMarvelHeroes(heroes);
-      } catch (error) {
-        console.error("Error al obtener la lista de superhéroes:", error);
-      }
-    };
-
-    fetchMarvelHeroes();
-  }, []); // Se ejecuta una vez al montar el componente
+  const [selectedHero, setSelectedHero] = useState(null);
 
   const handleDelete = (index) => {
     onDeleteEmergency(emergencies[index]);
@@ -65,20 +45,13 @@ const EmergencyTable = ({ headers, emergencies, onDeleteEmergency }) => {
     setModalOpen(false);
   };
 
-  const handleConfirmAssign = () => {
-    console.log("Asignar emergencia:", selectedEmergency);
-    console.log("Superhéroes seleccionados:", selectedHeroes);
-    setModalOpen(false);
+  const handleHeroSelect = (heroId) => {
+    setSelectedHero(heroId);
   };
 
-  const handleHeroCheckboxChange = (heroId) => {
-    setSelectedHeroes((prevSelectedHeroes) => {
-      if (prevSelectedHeroes.includes(heroId)) {
-        return prevSelectedHeroes.filter((id) => id !== heroId);
-      } else {
-        return [...prevSelectedHeroes, heroId];
-      }
-    });
+  const handleConfirmAssign = () => {
+    onAssignEmergency(selectedEmergency, selectedHero);
+    setModalOpen(false);
   };
 
   return (
@@ -87,70 +60,62 @@ const EmergencyTable = ({ headers, emergencies, onDeleteEmergency }) => {
         Emergencias sin asignar
       </Typography>
       <Table>
-        <TableHeader headers={headers} />
+        <TableHead>
+          <TableRow>
+            {headers.map((header, index) => (
+              <TableCell key={index}>{header}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
         <TableBody>
           {emergencies.map((emergency, index) => (
-            <TableRowComponent
-              key={index}
-              cells={[
-                index + 1,
-                emergency,
-                <>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => handleDelete(index)}
-                  >
-                    Eliminar
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleAssign(index)}
-                  >
-                    Asignar
-                  </Button>
-                </>,
-              ]}
-            />
+            <TableRow key={index}>
+              <TableCell>{index + 1}</TableCell>
+              <TableCell>{emergency}</TableCell>
+              <TableCell>
+                <MUIButton
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => handleDelete(index)}
+                >
+                  Eliminar
+                </MUIButton>
+                <MUIButton
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleAssign(index)}
+                >
+                  Asignar
+                </MUIButton>
+              </TableCell>
+            </TableRow>
           ))}
         </TableBody>
       </Table>
 
       <Dialog open={modalOpen} onClose={handleCloseModal}>
-        <DialogTitle>Asignar Superhéroes</DialogTitle>
+        <DialogTitle>Asignar Superhéroe</DialogTitle>
         <DialogContent>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell>ID</TableCell>
-                <TableCell>Nombre</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {marvelHeroes.map((hero) => (
-                <TableRow key={hero.id}>
-                  <TableCell>
-                    <Checkbox
-                      checked={selectedHeroes.includes(hero.id)}
-                      onChange={() => handleHeroCheckboxChange(hero.id)}
-                    />
-                  </TableCell>
-                  <TableCell>{hero.id}</TableCell>
-                  <TableCell>{hero.name}</TableCell>
-                </TableRow>
+          <FormControl fullWidth>
+            <Select
+              value={selectedHero}
+              onChange={(e) => handleHeroSelect(e.target.value)}
+            >
+              {marvelCharacters.map((hero) => (
+                <MenuItem key={hero.id} value={hero.id}>
+                  {hero.name}
+                </MenuItem>
               ))}
-            </TableBody>
-          </Table>
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal} color="secondary">
+          <MUIButton onClick={handleCloseModal} color="secondary">
             Cancelar
-          </Button>
-          <Button onClick={handleConfirmAssign} color="primary">
+          </MUIButton>
+          <MUIButton onClick={handleConfirmAssign} color="primary">
             Confirmar
-          </Button>
+          </MUIButton>
         </DialogActions>
       </Dialog>
     </TableContainer>

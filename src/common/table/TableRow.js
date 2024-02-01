@@ -1,4 +1,3 @@
-// common/TableRow.js
 import React from "react";
 import { TableRow, TableCell } from "@mui/material";
 
