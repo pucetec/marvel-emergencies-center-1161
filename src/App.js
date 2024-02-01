@@ -4,7 +4,7 @@ import TextInput from './common/textinput/text';
 import InsertButton from './common/button/button';
 import TableMarvel from './common/table/table';
 import { DeleteIcon, CheckIcon } from '@chakra-ui/icons';
-import MarvelModalContainer from './common/servicios/poput';
+import MarvelModal from './common/servicios/poput';
 
 const App = () => {
     const [emergencies, setEmergencies] = useState([]);
@@ -12,8 +12,8 @@ const App = () => {
     const [idCounter, setIdCounter] = useState(1);
     const [showPopup, setShowPopup] = useState(false);
     const [selectedEmergency, setSelectedEmergency] = useState(null);
-
-
+    const [assignedEmergencies, setAssignedEmergencies] = useState([]);
+    
     const handleInputChange = (event) => {
         setInputValue(event.target.value);
     }
@@ -41,11 +41,18 @@ const App = () => {
 
     const handleCheckIconClick = (emergencyId) => {
         setSelectedEmergency(emergencyId);
-        setShowPopup(true);
+        setShowPopup(true); // Mostrar el popup cuando se hace clic en el ícono de check
     };
 
-    const handleClosePopup = () => {
+    const handleClosePopup = (selectedHero) => {
         setShowPopup(false);
+        if (selectedHero) {
+            const selectedEmergencyItem = emergencies.find(emergency => emergency.id === selectedEmergency);
+            if (selectedEmergencyItem) {
+                setAssignedEmergencies([...assignedEmergencies, { ...selectedEmergencyItem, hero: selectedHero }]);
+                setEmergencies(emergencies.filter(emergency => emergency.id !== selectedEmergencyItem.id));
+            }
+        }
         setSelectedEmergency(null);
     };
 
@@ -61,9 +68,9 @@ const App = () => {
             <TableMarvel
                 headers={["#", "Emergencias", "Acciones"]}
                 bodyRows={emergencies.map(emergency => [
-                    <span>{emergency.id}</span>,
-                    <span>{emergency.name}</span>,
-                    <div>
+                    <span key={emergency.id}>{emergency.id}</span>,
+                    <span key={emergency.id + "-name"}>{emergency.name}</span>,
+                    <div key={emergency.id + "-actions"}>
                         <button onClick={() => handleDeleteEmergency(emergency.id)}>
                             <DeleteIcon />
                         </button>
@@ -79,14 +86,19 @@ const App = () => {
             <strong>Emergencias Asignadas</strong>
             <TableMarvel
                 headers={["#", "Emergencias", "Heroe", "Acciones"]}
-                bodyRows={[
-                    ["nuevo", "dato", "thor", <div><DeleteIcon /><CheckIcon /></div>]
-                ]}
+                bodyRows={assignedEmergencies.map(emergency => [
+                    <span key={emergency.id}>{emergency.id}</span>,
+                    <span key={emergency.id + "-name"}>{emergency.name}</span>,
+                    <span key={emergency.id + "-hero"}>{emergency.hero}</span>,
+                    <div key={emergency.id + "-actions"}>
+                        <button>
+                            <DeleteIcon />
+                        </button>
+                    </div>
+                ])}
             />
-            {/* Agregar el Popup */}
-            <MarvelModalContainer handleClose={handleClosePopup} show={showPopup}>
-                Contenido del Popup
-            </MarvelModalContainer>
+            
+            {showPopup && <MarvelModal show={showPopup} handleClose={handleClosePopup} />}
         </div>
     );
 }

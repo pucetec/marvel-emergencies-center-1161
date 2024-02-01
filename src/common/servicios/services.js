@@ -1,23 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import MarvelModal from './poput';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import md5 from 'crypto-js/md5';
+import CryptoJS from 'crypto-js';
 
-const Public_key = "640d1a3f181daef1d461ca9e45431977";
-const Private_key = "6742d62f048eea0e5bba41006af05a1e7c8b4af6";
+const MarvelCharacters = ({ onSelect }) => {
+  const [characters, setCharacters] = useState([]);
 
-export const bringMarvelInfo = async () => {
-  try {
-    const timestamp = Date.now().toString();
-    const hash = md5(timestamp + Private_key + Public_key).toString();
-    const response = await axios.get(
-      `https://gateway.marvel.com/v1/public/characters?apikey=${Public_key}&ts=${timestamp}&hash=${hash}`
-    );
+  useEffect(() => {
+    const publicKey = '640d1a3f181daef1d461ca9e45431977';
+    const privateKey = '6742d62f048eea0e5bba41006af05a1e7c8b4af6';
+    const ts = new Date().getTime().toString();
+    const hash = CryptoJS.MD5(ts + privateKey + publicKey).toString();
 
-    // Devuelve la lista de personajes (results) de la respuesta
-    return response.data?.data?.results || [];
-  } catch (error) {
-    console.error("Error fetching Marvel characters:", error);
-    return [];
-  }
+    const url = `https://gateway.marvel.com/v1/public/characters?apikey=${publicKey}&ts=${ts}&hash=${hash}`;
+
+    axios.get(url)
+      .then(response => {
+        setCharacters(response.data.data.results);
+      })
+      .catch(error => {
+        console.error('Error fetching Marvel characters:', error);
+      });
+  }, []);
+
+  const handleSelect = (character) => {
+    onSelect(character);
+  };
+
+  return (
+    <div>
+      <h1>Marvel Characters</h1>
+      <ul>
+        {characters.map(character => (
+          <li key={character.id} onClick={() => handleSelect(character)} style={{ cursor: 'pointer' }}>
+            {character.name}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 };
+
+export default MarvelCharacters;
