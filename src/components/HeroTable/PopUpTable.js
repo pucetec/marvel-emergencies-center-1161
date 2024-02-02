@@ -10,10 +10,13 @@ import AddButton from '../../common/Button/AddButton';
 
 const style = {
   position: 'absolute',
-  top: '20%',
+  top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 600,
+  maxWidth: '90%',
+  maxHeight: '80vh',
+  overflowY: 'auto', 
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -42,7 +45,7 @@ const PopUpTable = () => {
               Heroes
             </Typography>
             {heroStatus && (
-                <TableEdit headers={["#", "Emergencia", "Acciones"]} bodyRows={heroStatus.data.results.map((hero, index) => [
+                <TableEdit headers={["ID heroe", "Heroe", "Acciones"]} bodyRows={heroStatus.data.results.map((hero, index) => [
                     hero.id,
                     hero.name,
                     <NormalButton text={"Asignar"} variant={"contained"} ></NormalButton>
