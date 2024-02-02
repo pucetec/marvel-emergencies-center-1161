@@ -1,52 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, createContext, useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import './App.css';
 import axios from 'axios';
 import md5 from 'md5';
-const PUBLIC_KEY = "d11896174cefa95a248c5619c4cee6cf"
-const PRIVATE_KEY = "8de69697b2c5ddf579ace1af6e2da229dbe681b5"
-const GATEWAY = "https://gateway.marvel.com:443/v1/public/characters?"
+import { Button, Modal, Table } from "react-bootstrap";
 
+const MarvelContext = createContext();
+
+const PUBLIC_KEY = "d11896174cefa95a248c5619c4cee6cf";
+const PRIVATE_KEY = "8de69697b2c5ddf579ace1af6e2da229dbe681b5";
+const GATEWAY = "https://gateway.marvel.com:443/v1/public/characters?";
 
 const App = () => {
   const [emergenciasSinAsignar, setEmergenciasSinAsignar] = useState([]);
   const [emergenciasAsignadas, setEmergenciasAsignadas] = useState([]);
   const [nuevaEmergencia, setNuevaEmergencia] = useState('');
-  
-  const bringMarvelInfo = async () => {
-    const currentTimestamp = Date.now().toString();
-    const hash = currentTimestamp + PRIVATE_KEY + PUBLIC_KEY;
-    const md5hash = md5(hash);
+  const [showModal, setShowModal] = useState(false);
+  const [marvelData, setMarvelData] = useState(null);
 
-    const response = await axios.get(
-      GATEWAY +"&ts=" + currentTimestamp + "&apikey="+ PUBLIC_KEY + "&hash=" + md5hash,
-    );
-        console.log({response});
-
-  }
-  bringMarvelInfo();
-
-  const handleChange = (e) => {
-    setNuevaEmergencia(e.target.value);
-  };
+  const handleCloseModal = () => setShowModal(false);
 
   const handleIngresar = () => {
     if (nuevaEmergencia.trim() !== '') {
-      setEmergenciasSinAsignar([...emergenciasSinAsignar, nuevaEmergencia]);
+      const nuevaEmergenciaConNumero = {
+        numero: emergenciasSinAsignar.length + 1,
+        descripcion: nuevaEmergencia,
+      };
+
+      setEmergenciasSinAsignar([...emergenciasSinAsignar, nuevaEmergenciaConNumero]);
       setNuevaEmergencia('');
     }
   };
 
-  const handleAcciones = (numeroEmergencia, tipoEmergencia) => {
-    console.log(`Realizando acciones para la emergencia ${numeroEmergencia} (${tipoEmergencia})`);
+  const handleAsignar = () => {
+    axios.get(
+      GATEWAY + "&ts=" + Date.now().toString() + "&apikey=" + PUBLIC_KEY + "&hash=" + md5(Date.now().toString() + PRIVATE_KEY + PUBLIC_KEY),
+    )
+      .then(response => {
+        console.log('Respuesta de Marvel API:', response.data);
+        setMarvelData(response.data);
+        setShowModal(true);
+      })
+      .catch(error => {
+        console.error('Error al obtener datos de Marvel API', error);
+      });
+  };
+  
+
+  const handleElegirHeroe = (heroe) => {
+    const emergenciaAsignada = {
+      numero: emergenciasSinAsignar.length + 1,
+      descripcion: nuevaEmergencia,
+      heroe: heroe.name,
+    };
+
+    setEmergenciasAsignadas([...emergenciasAsignadas, emergenciaAsignada]);
+    setEmergenciasSinAsignar(emergenciasSinAsignar.filter((e) => e.numero !== emergenciaAsignada.numero));
+    setNuevaEmergencia('');
+    setShowModal(false);
   };
 
-  const handleEliminar = (numeroEmergencia, tipoEmergencia) => {
-    if (tipoEmergencia === 'sinAsignar') {
-      setEmergenciasSinAsignar(emergenciasSinAsignar.filter((_, index) => index + 1 !== numeroEmergencia));
-    } else {
-      setEmergenciasAsignadas(emergenciasAsignadas.filter((_, index) => index + 1 !== numeroEmergencia));
-    }
+  const handleEliminarSinAsignar = (numeroEmergencia) => {
+    setEmergenciasSinAsignar(emergenciasSinAsignar.filter((e) => e.numero !== numeroEmergencia));
   };
 
   return (
@@ -58,7 +73,7 @@ const App = () => {
           <input
             type="text"
             value={nuevaEmergencia}
-            onChange={handleChange}
+            onChange={(e) => setNuevaEmergencia(e.target.value)}
             className="form-control form-control-sm mr-2"
             placeholder="Ingrese texto..."
           />
@@ -73,24 +88,27 @@ const App = () => {
             <tr>
               <th scope="col">#</th>
               <th scope="col">Emergencia</th>
-              <th scope="col">Acciones</th>
+              <th scope="col">Asignar</th>
+              <th scope="col">Eliminar</th>
             </tr>
           </thead>
           <tbody>
-            {emergenciasSinAsignar.map((emergencia, index) => (
-              <tr key={index}>
-                <th scope="row">{index + 1}</th>
-                <td>{emergencia}</td>
+            {emergenciasSinAsignar.map((emergencia) => (
+              <tr key={emergencia.numero}>
+                <th scope="row">{emergencia.numero}</th>
+                <td>{emergencia.descripcion}</td>
                 <td>
                   <button
-                    className="btn btn-secondary mr-2"
-                    onClick={() => handleAcciones(index + 1, 'sinAsignar')}
+                    className="btn btn-success"
+                    onClick={() => handleAsignar(emergencia.numero)}
                   >
-                    Acciones
+                    Asignar
                   </button>
+                </td>
+                <td>
                   <button
                     className="btn btn-danger"
-                    onClick={() => handleEliminar(index + 1, 'sinAsignar')}
+                    onClick={() => handleEliminarSinAsignar(emergencia.numero)}
                   >
                     Eliminar
                   </button>
@@ -101,38 +119,67 @@ const App = () => {
         </table>
 
         <h3>EMERGENCIAS ASIGNADAS</h3>
-        <table className="table mt-4">
+        <Table striped bordered hover>
           <thead>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">Emergencia</th>
-              <th scope="col">Héroe</th>
-              <th scope="col">Acciones</th>
+              <th>#</th>
+              <th>Emergencia</th>
+              <th>Héroe</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {emergenciasAsignadas.map((emergencia, index) => (
-              <tr key={index}>
-                <th scope="row">{index + 1}</th>
-                <td>{emergencia}</td>
+            {emergenciasAsignadas.map((emergencia) => (
+              <tr key={emergencia.numero}>
+                <td>{emergencia.numero}</td>
+                <td>{emergencia.descripcion}</td>
+                <td>{emergencia.heroe}</td>
                 <td>
                   <button
-                    className="btn btn-secondary mr-2"
-                    onClick={() => handleAcciones(index + 1, 'asignada')}
+                    className="btn btn-danger"
+                    onClick={() => console.log(`Realizar acciones para ${emergencia.heroe}`)}
                   >
                     Acciones
-                  </button>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleEliminar(index + 1, 'asignada')}
-                  >
-                    Eliminar
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
+
+        <Modal show={showModal} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Asigna tu superhéroe</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {marvelData && marvelData.results && marvelData.results.length > 0 ? (
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Asignar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {marvelData.results.map((superheroe, index) => (
+                    <tr key={superheroe.id}>
+                      <td>{index + 1}</td>
+                      <td>{superheroe.name}</td>
+                      <td>
+                        <button className="btn btn-primary" onClick={() => handleElegirHeroe(superheroe)}>
+                          Asignar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            ) : (
+              <p>No se encontraron datos de superhéroes.</p>
+            )}
+          </Modal.Body>
+        </Modal>
       </div>
     </div>
   );
