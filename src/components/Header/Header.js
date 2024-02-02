@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import TextInput from "../../common/Text/TextInput";
 import NormalButton from "../../common/Button/NormalButton";
-
 import TableEdit from "../../common/Table/Table";
 import DeleteButton from "../../common/Button/DeleteButton";
 import FloatButton from "../../common/Test/Tests";
 import { useEmergencyContext } from "../../contextos/EmergencyContext";
+import PopUpTable from "../HeroTable/PopUpTable";
+import { HeroContextProvider } from "../../contextos/HeroContext";
 
 const Header = () => {
   const { emergencies, addEmergency, deleteEmergency } = useEmergencyContext();
@@ -19,6 +20,7 @@ const Header = () => {
   };
 
   return (
+    <HeroContextProvider>
     <div style={{ textAlign: "center" }}>
       <h1>Central de Emergencia</h1>
       <div style={{ display: "flex" }}>
@@ -37,11 +39,12 @@ const Header = () => {
         item.id,
         item.name,
         <div>
-        <FloatButton tittle={"Asinacion de heroes"} key={position}/>
-        <DeleteButton key={position} onClick={() => deleteEmergency(item.id)}/>
+          <PopUpTable></PopUpTable>
+          <DeleteButton key={position} onClick={() => deleteEmergency(item.id)}/>
         </div>
       ])}></TableEdit>
     </div>
+    </HeroContextProvider>
   );
 };
 
