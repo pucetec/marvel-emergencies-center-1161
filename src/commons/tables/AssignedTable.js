@@ -25,7 +25,7 @@ const AssignedTable = () => {
               <td key={`${index}-cell2`}>{cellContent.emergency}</td>
               <td key={`${index}-cell3`}>{cellContent.heroe}</td>
               <td key={`${index}-cell4`}>
-                <ActionIconsAssignateEmergency index={index} />
+                <ActionIconsAssignateEmergency indexAssigned={index} />
               </td>
             </tr>
           );

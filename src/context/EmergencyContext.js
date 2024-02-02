@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import md5 from "md5";
+import { prettyFormat } from "@testing-library/react";
 
 const PUBLIC_KEY = "6886c73f7ae3a94939d49422fc355212";
 const PRIVATE_KEY = "45e6b8fe4c50b2ec285efc449bed72f256ad909d";
@@ -58,7 +59,9 @@ export const EmergencyContextProvider = ({ children }) => {
     );
     if (emergencyExists) {
       alert("No se puede ingresar 2 veces la misma emrgencia")
-    } else {
+    } else if (newEmergencyName === "") {
+      alert("no se puede ingresar una emergencia sin nombre")
+    } else  {
       setUnassignedEmergencyList((previousUnassignedEmergencyList) => {
         return [...previousUnassignedEmergencyList, newEmergency];
       });
@@ -88,24 +91,20 @@ export const EmergencyContextProvider = ({ children }) => {
   
   const handleOpenNewAssignation = (position) => {
     setOpen(true);
-    console.log("assignedList", assignedList);
-    let newTab = [];
-    if (selectedHeroe) {
-      newTab = assignedList.map((element) => {
-        console.log("newTab : ", newTab);
-        return { ...element, heroe: selectedHeroe };
-      });
-      const newNewTab = newTab.filter(
-        (item) => item.emergency !== selectedEmergency
-      );
-      setAssignedList(newNewTab);
-      setSelectedHeroe("");
-    }
+    setNewEmergencyName(assignedList[position].emergency)
+    deleteAssignedEmergency(position) 
   };
 
-  
+  useEffect(() => {
+    if (selectedHeroe) {
+      setAssignedList((previousAssignedList) => {
+        return [...previousAssignedList, { emergency: newEmergencyName, heroe: selectedHeroe }];
+      });
+      deleteAssignedEmergency(assignedList.length);
+      setSelectedHeroe("");
+    }
+  },[selectedHeroe])
       
-
   const handleClose = () => setOpen(false);
 
   const handleSelectHeroe = (heroe) => {
