@@ -53,9 +53,17 @@ export const EmergencyContextProvider = ({ children }) => {
     const newEmergency = {
       emergency: newEmergencyName,
     };
-    setUnassignedEmergencyList((previousUnassignedEmergencyList) => {
-      return [...previousUnassignedEmergencyList, newEmergency];
-    });
+    const emergencyExists = unassignedEmergencyList.some(
+      (emergency) => emergency.emergency === newEmergencyName
+    );
+    if (emergencyExists) {
+      alert("No se puede ingresar 2 veces la misma emrgencia")
+    } else {
+      setUnassignedEmergencyList((previousUnassignedEmergencyList) => {
+        return [...previousUnassignedEmergencyList, newEmergency];
+      });
+    }
+    setNewEmergencyName("");
   };
 
   const deleteEmergency = (position) => {
@@ -77,18 +85,16 @@ export const EmergencyContextProvider = ({ children }) => {
     setSelectedEmergency(unassignedEmergencyList[position].emergency);
   };
 
+  
   const handleOpenNewAssignation = (position) => {
     setOpen(true);
     console.log("assignedList", assignedList);
-
     let newTab = [];
-
     if (selectedHeroe) {
       newTab = assignedList.map((element) => {
         console.log("newTab : ", newTab);
         return { ...element, heroe: selectedHeroe };
       });
-
       const newNewTab = newTab.filter(
         (item) => item.emergency !== selectedEmergency
       );
@@ -96,6 +102,9 @@ export const EmergencyContextProvider = ({ children }) => {
       setSelectedHeroe("");
     }
   };
+
+  
+      
 
   const handleClose = () => setOpen(false);
 

@@ -11,7 +11,6 @@ const AsignatedEmergency = () => {
     <div>
       <Typography level={"h2"} text={"Emergencias Asignadas"} />
       <AssignedTable />
-      {selectedHeroe}
     </div>
   );
 };
