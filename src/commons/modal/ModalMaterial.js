@@ -7,6 +7,7 @@ import { useEmergency } from "../../context/EmergencyContextManagement";
 
 const ModalMaterial = () => {
   const { open, handleClose, style, handleClickModal } = useEmergency();
+
   return (
     <div>
       <Modal
@@ -20,7 +21,7 @@ const ModalMaterial = () => {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Asigna tu super héroe
           </Typography>
-          <ModalTable />           
+          <ModalTable />
         </Box>
       </Modal>
     </div>

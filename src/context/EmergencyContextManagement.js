@@ -1,79 +1,158 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
+import md5 from "md5";
 
-const EmergencyContextManagement = createContext();
+const PUBLIC_KEY = "6886c73f7ae3a94939d49422fc355212";
+const PRIVATE_KEY = "45e6b8fe4c50b2ec285efc449bed72f256ad909d";
+const GATEWAY = "https://gateway.marvel.com:443/v1/public/characters?";
 
-export const EmergencyContextManagementProvider = ({ children }) => {
+const EmergencyContext = createContext();
+
+export const EmergencyContextProvider = ({ children }) => {
   const [newEmergencyName, setNewEmergencyName] = useState("");
   const [unassignedEmergencyList, setUnassignedEmergencyList] = useState([]);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [selectedEmergency, setSelectedEmergency] = useState("");
-  const [heroeList, setHeroeList] = useState ([{heroe: "IronMan"}, {heroe: "Thor"}, {heroe: "Spiderman"}])
+  const [heroeList, setHeroeList] = useState([]);
   const [assignedList, setAssignedList] = useState([]);
-//-----------------------------------------------------------------
   const [selectedHeroe, setSelectedHeroe] = useState("");
-  const [newAssignment, setNewAssigment] = useState({});
-//------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// Modal Style
+
   const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
     width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
+    bgcolor: "background.paper",
+    border: "2px solid #000",
     boxShadow: 24,
     p: 4,
-  };  
+  };
+// --------------------------------------------------------------------------
+// API Marvel connection
 
-//----------------------------------------------------------------------
-//Fonctions
+  useEffect(() => {
+    const marvelHeroesInformation = async () => {
+      const timestamp = Date.now().toString();
+      const hash = md5(timestamp + PRIVATE_KEY + PUBLIC_KEY);
+      const response = await axios.get(
+        GATEWAY + "ts=" + timestamp + "&apikey=" + PUBLIC_KEY + "&hash=" + hash
+      );
+      setHeroeList(response.data.data.results);
+    };
+    if (heroeList.length === 0) {
+      marvelHeroesInformation();
+    }
+  }, [heroeList, setHeroeList]);
+// --------------------------------------------------------------------------
+// Functions
 
   const handleNewEmergencyClick = () => {
     const newEmergency = {
-      emergency: newEmergencyName
+      emergency: newEmergencyName,
     };
     setUnassignedEmergencyList((previousUnassignedEmergencyList) => {
-      return [...previousUnassignedEmergencyList, newEmergency]
+      return [...previousUnassignedEmergencyList, newEmergency];
     });
   };
 
   const deleteEmergency = (position) => {
-    const newUnassignedEmergencyList = unassignedEmergencyList.filter((item, index) => index !== position);
+    const newUnassignedEmergencyList = unassignedEmergencyList.filter(
+      (item, index) => index !== position
+    );
     setUnassignedEmergencyList(newUnassignedEmergencyList);
   };
 
-  const handleOpen = (position) => { 
+  const deleteAssignedEmergency = (position) => {
+    const newAssignedList = assignedList.filter(
+      (item, index) => index !== position
+    );
+    setAssignedList(newAssignedList);
+  };
+
+  const handleOpen = (position) => {
     setOpen(true);
     setSelectedEmergency(unassignedEmergencyList[position].emergency);
+  };
+
+  const handleOpenNewAssignation = (position) => {
+    setOpen(true);
+    console.log("assignedList", assignedList);
+
+    let newTab = [];
+
+    if (selectedHeroe) {
+      newTab = assignedList.map((element) => {
+        console.log("newTab : ", newTab);
+        return { ...element, heroe: selectedHeroe };
+      });
+
+      const newNewTab = newTab.filter(
+        (item) => item.emergency !== selectedEmergency
+      );
+      setAssignedList(newNewTab);
+      setSelectedHeroe("");
     }
+  };
 
   const handleClose = () => setOpen(false);
-//-------------------------------------------------------------------------------
+
   const handleSelectHeroe = (heroe) => {
-    setSelectedHeroe(`${heroe}`) 
-      console.log("depuis handle select heroe : ",`${heroe}`);
-      console.log("heroe selcetionné : ", selectedHeroe);
-      
+    setSelectedHeroe(`${heroe}`);
+  };
+
+  useEffect(() => {
+    if (selectedHeroe) {
+      setAssignedList((previousAssignedList) => {
+        return [
+          ...previousAssignedList,
+          { emergency: selectedEmergency, heroe: selectedHeroe },
+        ];
+      });
+      setOpen(false);
     }
+  }, [selectedHeroe]);
+
+  const assignmentFonction = (position) => {
+    handleOpen(position);
+    deleteEmergency(position);
+  };
 
   const handleClickModal = () => {
-    console.log("depuis click modal", selectedHeroe)
-    setNewAssigment({
-      emergency: selectedEmergency,
-      heroe: selectedHeroe});
-      setAssignedList((previousAssignedList) => {
-        return [...previousAssignedList, newAssignment]
-      }); 
-    setOpen(false);
-  }
+    console.log("depuis click modal", selectedHeroe);
+  };
 
-    return (
-        <EmergencyContextManagement.Provider value={{ newEmergencyName, setNewEmergencyName, unassignedEmergencyList, setUnassignedEmergencyList, handleNewEmergencyClick, deleteEmergency, handleOpen, handleClose, heroeList, handleClickModal, open, assignedList, style, handleSelectHeroe, setSelectedHeroe, selectedHeroe }} >
-            {children}
-        </EmergencyContextManagement.Provider>
-    );
+  return (
+    <EmergencyContext.Provider
+      value={{
+        newEmergencyName,
+        setNewEmergencyName,
+        unassignedEmergencyList,
+        setUnassignedEmergencyList,
+        handleNewEmergencyClick,
+        deleteEmergency,
+        handleOpen,
+        handleClose,
+        heroeList,
+        handleClickModal,
+        open,
+        assignedList,
+        style,
+        handleSelectHeroe,
+        setSelectedHeroe,
+        selectedHeroe,
+        assignmentFonction,
+        deleteAssignedEmergency,
+        handleOpenNewAssignation,
+      }}
+    >
+      {children}
+    </EmergencyContext.Provider>
+  );
 };
 
 export function useEmergency() {
-    return useContext(EmergencyContextManagement);
+  return useContext(EmergencyContext);
 }

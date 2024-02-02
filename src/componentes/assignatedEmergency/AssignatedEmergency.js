@@ -5,12 +5,12 @@ import { useEmergency } from "../../context/EmergencyContextManagement";
 
 const AsignatedEmergency = () => {
   const { selectedHeroe } = useEmergency();
-  console.log(selectedHeroe)
+  console.log(selectedHeroe);
+
   return (
     <div>
       <Typography level={"h2"} text={"Emergencias Asignadas"} />
       <AssignedTable />
-     
       {selectedHeroe}
     </div>
   );
