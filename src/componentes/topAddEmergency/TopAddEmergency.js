@@ -2,7 +2,7 @@ import React from "react";
 import Typography from "../../commons/typography/Typography";
 import TextInput from "../../commons/textInput/TextInput";
 import ButtonMaterial from "../../commons/button/ButtonMaterial";
-import { useEmergency } from "../../context/EmergencyContextManagement";
+import { useEmergency } from "../../context/EmergencyContext";
 
 const TopAddEmergemcy = () => {
   const {

@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from "../../commons/typography/Typography";
 import AssignedTable from "../../commons/tables/AssignedTable";
-import { useEmergency } from "../../context/EmergencyContextManagement";
+import { useEmergency } from "../../context/EmergencyContext";
 
 const AsignatedEmergency = () => {
   const { selectedHeroe } = useEmergency();

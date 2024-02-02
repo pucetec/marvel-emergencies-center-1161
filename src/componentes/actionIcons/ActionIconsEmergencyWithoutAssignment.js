@@ -2,7 +2,7 @@ import React from "react";
 import DeleteSharpIcon from "@mui/icons-material/DeleteSharp";
 import AssignmentInd from "@mui/icons-material/AssignmentInd";
 import ModalMaterial from "../../commons/modal/ModalMaterial";
-import { useEmergency } from "../../context/EmergencyContextManagement";
+import { useEmergency } from "../../context/EmergencyContext";
 
 const ActionIconsEmergencyWithoutAssignment = ({ index }) => {
   const { assignmentFonction, deleteEmergency } = useEmergency();

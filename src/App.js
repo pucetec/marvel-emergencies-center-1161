@@ -2,7 +2,7 @@ import React from "react";
 import TopAddEmergemcy from "./componentes/topAddEmergency/TopAddEmergency";
 import EmergencyWithoutAsignation from "./componentes/emergencyWithoutAssignment/EmergencyWithoutAssignment";
 import AsignatedEmergency from "./componentes/assignatedEmergency/AssignatedEmergency";
-import { EmergencyContextProvider } from "./context/EmergencyContextManagement";
+import { EmergencyContextProvider } from "./context/EmergencyContext";
 
 const App = () => {
   

@@ -1,6 +1,6 @@
 import React from "react";
 import ActionIconsAssignateEmergency from "../../componentes/actionIcons/ActionIconAssignatedEmergency";
-import { useEmergency } from "../../context/EmergencyContextManagement";
+import { useEmergency } from "../../context/EmergencyContext";
 
 const AssignedTable = () => {
   const { assignedList } = useEmergency();

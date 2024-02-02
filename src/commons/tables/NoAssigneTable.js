@@ -1,6 +1,6 @@
 import React from "react";
 import ActionIconsEmergencyWithoutAssignment from "../../componentes/actionIcons/ActionIconsEmergencyWithoutAssignment";
-import { useEmergency } from "../../context/EmergencyContextManagement";
+import { useEmergency } from "../../context/EmergencyContext";
 
 const NoAssigneTable = () => {
   const { unassignedEmergencyList } = useEmergency();

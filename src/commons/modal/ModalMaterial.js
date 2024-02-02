@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import ModalTable from '../tables/ModalTable';
-import { useEmergency } from "../../context/EmergencyContextManagement";
+import { useEmergency } from "../../context/EmergencyContext";
 
 const ModalMaterial = () => {
   const { open, handleClose, style, handleClickModal } = useEmergency();

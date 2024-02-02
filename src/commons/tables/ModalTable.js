@@ -1,6 +1,6 @@
 import React from "react";
 import ButtonMaterial from "../button/ButtonMaterial";
-import { useEmergency } from "../../context/EmergencyContextManagement";
+import { useEmergency } from "../../context/EmergencyContext";
 
 const ModalTable = () => {
   const { heroeList, handleSelectHeroe } = useEmergency();

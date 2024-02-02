@@ -1,7 +1,7 @@
 import React from "react";
 import DeleteSharpIcon from "@mui/icons-material/DeleteSharp";
 import AssignmentInd from "@mui/icons-material/AssignmentInd";
-import { useEmergency } from "../../context/EmergencyContextManagement";
+import { useEmergency } from "../../context/EmergencyContext";
 
 const ActionIconsAssignateEmergency = ({ index }) => {
   const { deleteAssignedEmergency, handleOpenNewAssignation } = useEmergency();
