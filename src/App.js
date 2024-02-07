@@ -1,24 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import TopAddEmergemcy from "./componentes/topAddEmergency/TopAddEmergency";
+import EmergencyWithoutAsignation from "./componentes/emergencyWithoutAssignment/EmergencyWithoutAssignment";
+import AsignatedEmergency from "./componentes/assignatedEmergency/AssignatedEmergency";
+import { EmergencyContextProvider } from "./context/EmergencyContext";
 
-function App() {
+const App = () => {
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <EmergencyContextProvider>
+      <div >
+        <TopAddEmergemcy />
+        <center>
+          <EmergencyWithoutAsignation />
+          <AsignatedEmergency />
+        </center>
+      </div>
+    </EmergencyContextProvider>
   );
 }
 
